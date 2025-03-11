@@ -44,5 +44,5 @@ Ruby Lux — это веб-сайт для ювелирного магазина
     git clone https://github.com/ваш-username/ruby-lux.git
   - Откройте файл index.html в браузере.
 
-##Автор:
+## Автор:
 Logan-Rus
