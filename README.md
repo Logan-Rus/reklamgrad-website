@@ -24,13 +24,8 @@
         bash
         git clone https://github.com/Logan-Rus/reklamgrad-website.git
 
-  - Перейдите в директорию проекта:
-
-        bash
-        cd saitereklamgrad
 - Запуск проекта
-
-  - Откройте терминал в PyCharm:
+  
   - Установите зависимости из файла requirements.txt:
 
         bash
@@ -40,7 +35,7 @@
   - Перейдите в директорию saite:
 
         bash
-        cd saitereklamgrad\saite
+        cd saite
     
   - И выполните следующую команду:
 
