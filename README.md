@@ -32,10 +32,10 @@
         pip install -r requirements.txt
     
   - Убедитесь, что все зависимости успешно установлены.
-  - Перейдите в директорию saite:
+  - Перейдите в директорию reklamgrad-website:
 
         bash
-        cd saite
+        cd reklamgrad-website
     
   - И выполните следующую команду:
 
