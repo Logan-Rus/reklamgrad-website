@@ -1,0 +1,436 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ work.title2 }} | REKLAMGRAD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{% static 'favicon.ico' %}" />
+    <style>
+        /* Стили для экрана загрузки */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 20px;
+            opacity: 1;
+            transition: opacity 2.0s ease;
+        }
+
+        #loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid DimGrey;
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 0.9s linear forwards;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+                display: none;
+            }
+        }
+
+        #content {
+            display: none;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-align: center;
+            color: black;
+        }
+
+        /* Общие стили для карточек */
+        .card {
+            background: none;
+            border: none;
+            box-shadow: none;
+            margin-bottom: 20px;
+        }
+
+        .card img {
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .card img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Стили для заголовков карточек */
+        .card-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        /* Стили для текста карточек */
+        .card-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            font-size: 1.5rem;
+            line-height: 100%;
+            border-bottom: 1px solid white;
+            font-weight: bold;
+        }
+
+        .navbar img {
+            max-width: 2%;
+        }
+
+        .footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px 0;
+            flex-shrink: 0; /* Футер не сжимается */
+        }
+
+        .footer a {
+            color: #A9A9A9;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .footer-menu a {
+            font-size: 0.8rem;
+        }
+
+        .footer_btn:hover {
+            color: white;
+        }
+
+        .footer-social a {
+            color: #A9A9A9;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: white;
+        }
+
+        .footer .card {
+            margin-bottom: 10px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .footer .card img {
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .footer .card-title {
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .footer-menu {
+            display: block !important;
+            list-style: none !important;
+            padding-left: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .footer-menu .nav-item {
+            margin-bottom: 10px !important;
+        }
+
+        .footer-menu .nav-link {
+            color: #A9A9A9 !important;
+            text-decoration: none !important;
+            transition: color 0.3s !important;
+            font-size: 0.8rem !important;
+            display: block !important;
+        }
+
+        .footer-menu .nav-link:hover {
+            color: white !important;
+        }
+
+        .btn-primary {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-color: #A9A9A9;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+            color: black;
+        }
+
+        .btn-primary:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .svbtn-primary {
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+
+        .svbtn-primary:hover {
+            background-color: #A9A9A9;
+            color: white;
+        }
+
+        .section-text {
+            font-size: 0.9rem;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .container {
+            flex: 1; /* Контент занимает всё доступное пространство */
+        }
+
+        .lead1 {
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        /* Стили для карточек в разделе "Наши услуги" */
+        #collections .card {
+            background: none;
+            border: none;
+            box-shadow: none;
+            margin-bottom: 20px;
+        }
+
+        #collections .card img {
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        #collections .card img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div id="loading-screen">
+        <div id="loader"></div>
+    </div>
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <img src="{% static 'uv2.png' %}" alt="Logo"><a class="navbar-brand" href="http://127.0.0.1:8000/#">REKLAMGRAD</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item me-5">
+                        <a class="nav-link" href="http://127.0.0.1:8000/#">Главная</a>
+                    </li>
+                    <li class="nav-item me-5">
+                        <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
+                    </li>
+                    <li class="nav-item me-5">
+                        <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                    </li>
+                    <li class="nav-item me-5">
+                        <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
+                    </li>
+                    <li class="nav-item me-5">
+                        <a class="nav-link" href="http://127.0.0.1:8000/#contact">Контакты</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Детали работы -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4">{{ work.title2 }}</h1>
+                <img src="{{ work.image2.url }}" class="img-fluid rounded mb-4" alt="{{ work.title2 }}">
+                <p class="lead1">{{ work.tip }}</p>
+                <p class="lead">{{ work.description2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Другие работы -->
+    <i><h1 style="font-family: 'Montserrat', sans-serif; text-align: center;">Ещё проекты:</h1></i>
+    <div class="container my-5">
+        <div class="row">
+            {% if latest_works %}
+                <!-- Текущая работа -->
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <a href="{% url 'work_detail' work.id %}">
+                            <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title">{{ work.title2 }}</h6>
+                        </div>
+                    </div>
+                </div>
+                {% for other_work in latest_works %}
+                    {% if other_work.id != work.id %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <a href="{% url 'work_detail' other_work.id %}">
+                                    <img src="{{ other_work.image2.url }}" class="card-img-top" alt="{{ other_work.title2 }}">
+                                </a>
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ other_work.title2 }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p>Нет доступных работ.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                <!-- Информация о компании -->
+                <div class="col-md-3" id="inv">
+                    <h5>Рекламное агентство <br /> "Рекламград"</h5>
+                    <div class="horizontal_line"></div>
+                    <p style="font-size: 0.9rem">Изготовление рекламной продукции и <br /> размещение рекламы в городах России.</p>
+                    <p><strong>📞Телефон:</strong> <a class="nav-link" href="tel:+79157777314">+7 (915) 777-73-14</a></p>
+                    <p><strong>📧Email:</strong> <a class="nav-link" href="mailto:reklamgrad@mail.ru">reklamgrad@mail.ru</a></p>
+                </div>
+
+                <!-- Меню -->
+                <div class="col-md-3">
+                    <h5>Меню</h5>
+                    <div class="horizontal_line"></div>
+                    <ul class="footer-menu" style="padding-left: 0; list-style: none;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://127.0.0.1:8000/#">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://127.0.0.1:8000/#contact">Контакты</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Наши услуги -->
+                <div class="col-md-3">
+                    <h5>Наши услуги</h5>
+                    <div class="horizontal_line"></div>
+                    <ul style="padding-left: 0; list-style: none;">
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/2/">Вывески</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/3/">Тривижн</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/4/">Уличная мебель</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/5/">Рекламные щиты</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/7/">Световые короба</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/8/">Широкоформатная печать</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/10/">Печать и штампы</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/11/">Брендирование автомобилей</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/12/">Архитектурная подсветка зданий</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/13/">Ситилайт</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/15/">Полиграфия и сувенирная продукция</a></li>
+                    </ul>
+                </div>
+
+                <!-- Последние работы -->
+                <div class="col-md-3">
+                    <h5>Последние работы</h5>
+                    <div class="horizontal_line"></div>
+                    <div class="row">
+                        {% if latest_works %}
+                            {% for work in latest_works|slice:":3" %}
+                                <div class="col-md-12 mb-3">
+                                    <a href="{% url 'work_detail' work.id %}" style="text-decoration: none;">
+                                        <div class="card">
+                                            <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ work.title2 }}</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Нет доступных работ.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Копирайт -->
+            <div class="text-center">
+                <p style="font-size: 12px;">&copy; 2025 <a class="footer_btn" href="http://127.0.0.1:8000/#">REKLAMGRAD</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Подключение Bootstrap JS и зависимости через CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Кастомные JS -->
+    <script>
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loading-screen');
+            const content = document.getElementById('content');
+
+            loadingScreen.style.opacity = '0';
+
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                content.style.display = 'block';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
