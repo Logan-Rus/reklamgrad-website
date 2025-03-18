@@ -7,6 +7,7 @@
     <title>Наши работы | REKLAMGRAD</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="{% static 'favicon.ico' %}" />
     <style>
         /* Стили для экрана загрузки */
@@ -23,7 +24,8 @@
             flex-direction: column;
             font-size: 20px;
             opacity: 1;
-            transition: opacity 2.0s ease;
+            transition: opacity 1.0s ease;
+	    z-index: 1000; 
         }
 
         #loader {
@@ -104,6 +106,7 @@
             line-height: 100%;
             border-bottom: 1px solid white;
             font-weight: bold;
+	    z-index: 999;
         }
 
         .navbar img {
@@ -184,6 +187,19 @@
             color: white !important;
         }
 
+	.btn-icon {
+    padding: 5px;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.0); /* Цвет VK */
+    width: 30px; /* Размер иконки */
+    height: 30px; /* Размер иконки */
+}
+
+.btn-icon:hover {
+    background-color: #3a5f8a; /* Цвет VK при наведении */
+}
+
         .btn-primary {
             background-color: rgba(0, 0, 0, 0.1);
             border-color: #A9A9A9;
@@ -258,7 +274,7 @@
                         <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
                     </li>
                     <li class="nav-item me-5">
-                        <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                        <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
                     </li>
                     <li class="nav-item me-5">
                         <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
@@ -273,6 +289,7 @@
 
     <!-- Портфолио -->
     <div class="container">
+	<h2 class="section-title" style="margin-top: 100px;">Все наши работы</h2>
         <div class="row">
             {% if work2 %}
                 {% for work in work2 %}
@@ -318,7 +335,7 @@
                             <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                            <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
@@ -332,26 +349,24 @@
                 <!-- Наши услуги -->
                 <div class="col-md-3">
                     <h5>Наши услуги</h5>
-                    <div class="horizontal_line"></div>
                     <ul style="padding-left: 0; list-style: none;">
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/2/">Вывески</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/3/">Тривижн</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/4/">Уличная мебель</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/5/">Рекламные щиты</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/7/">Световые короба</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/8/">Широкоформатная печать</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/10/">Печать и штампы</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/11/">Брендирование автомобилей</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/12/">Архитектурная подсветка зданий</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/13/">Ситилайт</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/15/">Полиграфия и сувенирная продукция</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/2/">Вывески</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/3/">Тривижн</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/4/">Уличная мебель</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/5/">Рекламные щиты</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/7/">Световые короба</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/8/">Широкоформатная печать</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/10/">Печать и штампы</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/11/">Брендирование автомобилей</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/12/">Архитектурная подсветка зданий</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/13/">Ситилайт</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/15/">Полиграфия и сувенирная продукция</a></li>
                     </ul>
                 </div>
 
                 <!-- Последние работы -->
                 <div class="col-md-3">
                     <h5>Последние работы</h5>
-                    <div class="horizontal_line"></div>
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3" %}
@@ -377,9 +392,14 @@
 
             <!-- Копирайт -->
             <div class="text-center">
-                <p style="font-size: 12px;">&copy; 2025 <a class="footer_btn" href="http://127.0.0.1:8000/#">REKLAMGRAD</a></p>
-            </div>
-        </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <p style="font-size: 12px; margin: 0;">&copy; 2025 <a class="footer_btn" href="#">REKLAMGRAD</a></p>
+        <a href="https://vk.com/reklamgrad" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
+            <i class="fab fa-vk"></i>
+        </a>
+    </div>
+</div>
+
     </footer>
 
     <!-- Подключение Bootstrap JS и зависимости через CDN -->
@@ -396,8 +416,9 @@
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 content.style.display = 'block';
-            }, 2000);
+            }, 1000);
         });
+
     </script>
 </body>
 </html>

@@ -28,7 +28,8 @@
             flex-direction: column;
             font-size: 20px;
             opacity: 1;
-            transition: opacity 2.0s ease;
+            transition: opacity 1.0s ease;
+	    z-index: 1000;   
         }
 
         #loader {
@@ -40,6 +41,17 @@
             animation: spin 0.9s linear forwards;
         }
 
+	@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    .hero-section p {
+        font-size: 1.5rem;
+    }
+    .navbar img {
+        max-width: 10%;
+    }
+}
         @keyframes spin {
             from {
                 transform: rotate(0deg);
@@ -49,6 +61,15 @@
                 display: none;
             }
         }
+
+	.navbar-hidden {
+
+
+	}
+
+	#loading-screen.hidden {
+    	    display: none; /* Полностью скрыть экран загрузки после завершения анимации */
+	}	
 
         #content {
             display: none;
@@ -64,19 +85,19 @@
         }
 
         /* Стили для карточек в разделе "Наши услуги" */
-        #collections .card {
+        #services .card {
             background: none;
             border: none;
             box-shadow: none;
             margin-bottom: 20px;
         }
 
-        #collections .card img {
+        #services .card img {
             border-radius: 10px;
             transition: transform 0.3s ease;
         }
 
-        #collections .card img:hover {
+        #services .card img:hover {
             transform: scale(1.05);
         }
 
@@ -117,6 +138,7 @@
             line-height: 100%;
             border-bottom: 1px solid white;
             font-weight: bold;
+	    z-index: 999;
         }
 
         .navbar img {
@@ -195,8 +217,9 @@
         }
 
         .btn-primary {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.0);
             border-color: #A9A9A9;
+	    border: none;
             padding: 10px 20px;
             transition: background-color 0.3s;
             color: black;
@@ -204,8 +227,16 @@
 
         .btn-primary:hover {
             background-color: white;
-            color: black;
+            color: #A9A9A9;
         }
+
+	.btn-primary:focus, .btn-primary:active {
+    background-color: rgba(0, 0, 0, 0.0) !important; /* Прозрачный фон */
+    color: black !important; /* Цвет текста */
+    box-shadow: none !important; /* Убирает тень */
+    outline: none !important; /* Убирает обводку */
+}
+
 
         .btn-details {
             background-color: rgba(0, 0, 0, 0.0);
@@ -231,6 +262,19 @@
         .btn-details:hover i {
             transform: translateX(5px);
         }
+	
+	.btn-icon {
+    padding: 5px;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.0); /* Цвет VK */
+    width: 30px; /* Размер иконки */
+    height: 30px; /* Размер иконки */
+}
+
+.btn-icon:hover {
+    background-color: #3a5f8a; /* Цвет VK при наведении */
+}
 
         .section-text {
             text-align: center;
@@ -247,7 +291,7 @@
             background-color: #A9A9A9;
             color: white;
         }
-
+	
         footer {
             background-color: rgba(0, 0, 0, 0.9);
             color: white;
@@ -320,6 +364,7 @@
         .footer-menu .nav-link:hover {
             color: white !important;
         }
+	
     </style>
 </head>
 <body>
@@ -344,7 +389,7 @@
                         <a class="nav-link" href="#about">О нас</a>
                     </li>
                     <li class="nav-item me-5">
-                        <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                        <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
                     </li>
                     <li class="nav-item me-5">
                         <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
@@ -365,7 +410,7 @@
             <div class="changing-text">
                 <span id="changing-word">Надежность</span>
             </div>
-            <a href="http://127.0.0.1:8000/collections/" class="btn basebtn-primary btn-lg">Наши услуги</a>
+            <a href="http://127.0.0.1:8000/services/" class="btn basebtn-primary btn-lg">Наши услуги</a>
         </div>
     </div>
 
@@ -397,21 +442,22 @@
     </div>
 
     <!-- Услуги -->
-    <div id="collections" class="container my-3 py-3">
+    <div id="service" class="container my-3 py-3">
         <h2 class="section-title" mb-5>Наши услуги</h2>
         <div class="row">
-            {% if collections %}
-                {% for collection in collections %}
+            {% if services %}
+                {% for service in services %}
                     <div class="col-md-3 mb-3">
                         <div class="card">
-                            <a href="{% url 'collection_detail' collection.id %}">
-                                <img src="{{ collection.image.url }}" class="card-img-top" alt="{{ collection.title }}">
+                            <a href="{% url 'service_detail' service.id %}">
+                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}">
                             </a>
                             <div class="card-body text-center">
-                                <h3 class="card-title">{{ collection.title }}</h3>
+                                <h3 class="card-title">{{ service.title }}</h3>
                                 <div class="text-left">
-                                    {% if collection.description %}
-                                        <p>{{ collection.description|truncatechars:60 }}</p>
+                                    {% if service.description %}
+                                        <p>{{ service.description|truncatechars:60 }}</p>
+					<a href="{% url 'service_detail' service.id %}" class="btn btn-primary">Подробнее</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -426,7 +472,7 @@
         </div>
     </div>
 
-    <!-- Портфолио -->
+    <!-- Наши работы -->
     <div id="works" class="container my-5 py-5">
         <h2 class="section-title">Наши работы</h2>
         <div class="row">
@@ -491,7 +537,7 @@
                             <a class="nav-link" href="#about">О нас</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'all_collections' %}" class="nav-link">Наши услуги</a>
+                            <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
@@ -505,26 +551,24 @@
                 <!-- Наши услуги -->
                 <div class="col-md-3">
                     <h5>Наши услуги</h5>
-                    <div class="horizontal_line"></div>
                     <ul style="padding-left: 0; list-style: none;">
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/2/">Вывески</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/3/">Тривижн</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/4/">Уличная мебель</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/5/">Рекламные щиты</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/7/">Световые короба</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/8/">Широкоформатная печать</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/10/">Печать и штампы</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/11/">Брендирование автомобилей</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/12/">Архитектурная подсветка зданий</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/13/">Ситилайт</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/collections/15/">Полиграфия и сувенирная продукция</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/2/">Вывески</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/3/">Тривижн</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/4/">Уличная мебель</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/5/">Рекламные щиты</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/7/">Световые короба</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/8/">Широкоформатная печать</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/10/">Печать и штампы</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/11/">Брендирование автомобилей</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/12/">Архитектурная подсветка зданий</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/13/">Ситилайт</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/15/">Полиграфия и сувенирная продукция</a></li>
                     </ul>
                 </div>
 
                 <!-- Последние работы -->
                 <div class="col-md-3">
                     <h5>Последние работы</h5>
-                    <div class="horizontal_line"></div>
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3" %}
@@ -550,9 +594,13 @@
 
             <!-- Копирайт -->
             <div class="text-center">
-                <p style="font-size: 12px;">&copy; 2025 <a class="footer_btn" href="#">REKLAMGRAD</a></p>
-            </div>
-        </div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <p style="font-size: 12px; margin: 0;">&copy; 2025 <a class="footer_btn" href="#">REKLAMGRAD</a></p>
+        <a href="https://vk.com/reklamgrad" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
+            <i class="fab fa-vk"></i>
+        </a>
+    </div>
+</div>
     </footer>
 
     <!-- Подключение Bootstrap JS и зависимости через CDN -->
@@ -582,16 +630,29 @@
         setInterval(changeWord, 3000);
 
         window.addEventListener('load', () => {
-            const loadingScreen = document.getElementById('loading-screen');
-            const content = document.getElementById('content');
+    const loadingScreen = document.getElementById('loading-screen');
+    const content = document.getElementById('content');
 
-            loadingScreen.style.opacity = '0';
+    // Начать анимацию затухания
+    loadingScreen.style.opacity = '0';
 
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                content.style.display = 'block';
-            }, 2000);
-        });
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden'); // Полностью скрыть экран загрузки
+        content.style.display = 'block'; // Показать основной контент
+    }, 1000); // Время должно совпадать с длительностью анимации
+});;
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    if (!email || !message) {
+        alert('Пожалуйста, заполните все поля.');
+        return;
+    }
+    alert('Ваше сообщение успешно отправлено!');
+});
     </script>
 </body>
 </html>

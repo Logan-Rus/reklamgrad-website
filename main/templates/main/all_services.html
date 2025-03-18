@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ work.title2 }} | REKLAMGRAD</title>
+    <title>Наши услуги | REKLAMGRAD</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
             font-size: 20px;
             opacity: 1;
             transition: opacity 1.0s ease;
-  	    z-index: 1000; 
+	    z-index: 1000; 
         }
 
         #loader {
@@ -51,15 +51,8 @@
             display: none;
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            display: flex;
-            flex-direction: column;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .section-title {
@@ -100,6 +93,21 @@
             color: #555;
         }
 
+	#services .card {
+            background: none;
+            border: none;
+            box-shadow: none;
+            margin-bottom: 20px;
+        }
+
+        #services .card img {
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        #services .card img:hover {
+            transform: scale(1.05);
+        }
         .navbar {
             background: rgba(0, 0, 0, 0.8);
             font-size: 1.5rem;
@@ -117,7 +125,6 @@
             background-color: rgba(0, 0, 0, 0.9);
             color: white;
             padding: 20px 0;
-            flex-shrink: 0; /* Футер не сжимается */
         }
 
         .footer a {
@@ -186,8 +193,15 @@
         .footer-menu .nav-link:hover {
             color: white !important;
         }
+	
+	.btn-primary:focus, .btn-primary:active {
+    background-color: rgba(0, 0, 0, 0.0) !important; /* Прозрачный фон */
+    color: black !important; /* Цвет текста */
+    box-shadow: none !important; /* Убирает тень */
+    outline: none !important; /* Убирает обводку */
+}
 
-	.btn-icon {
+.btn-icon {
     padding: 5px;
     text-align: center;
     color: white;
@@ -201,16 +215,17 @@
 }
 
         .btn-primary {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-color: #A9A9A9;
+            background-color: rgba(0, 0, 0, 0.0);
+            border: none;
             padding: 10px 20px;
             transition: background-color 0.3s;
             color: black;
         }
 
         .btn-primary:hover {
-            background-color: white;
-            color: black;
+	    background-color: rgba(0, 0, 0, 0.0);
+            color: #A9A9A9;
+	    border: none;
         }
 
         .svbtn-primary {
@@ -228,15 +243,6 @@
             font-size: 0.9rem;
             text-align: center;
             font-family: 'Montserrat', sans-serif;
-        }
-
-        .container {
-            flex: 1; /* Контент занимает всё доступное пространство */
-        }
-
-        .lead1 {
-            font-style: italic;
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -275,55 +281,55 @@
         </div>
     </nav>
 
-    <!-- Подробная информация об работы -->
-    <div class="container my-5">
+    <!-- Все наши услуги -->
+    <div id="service" class="container my-3 py-3">
+        <h2 class="section-title" style="margin-top: 100px;">Наши услуги</h2>
         <div class="row">
-            <div class="col-md-8">
-                <h1 class="display-4">{{ work.title2 }}</h1>
-                <img src="{{ work.image2.url }}" class="img-fluid rounded mb-4" alt="{{ work.title2 }}">
-                <p class="lead1">{{ work.tip }}</p>
-                <p class="lead">{{ work.description2 }}</p>
-            </div>
-        </div>
-    </div>
-
-    <hr>
-
-    <!-- Другие работы -->
-    <i><h1 style="font-family: 'Montserrat', sans-serif; text-align: center;">Ещё проекты:</h1></i>
-    <div class="container my-5">
-        <div class="row">
-            {% if latest_works %}
-                <!-- Текущая работа -->
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <a href="{% url 'work_detail' work.id %}">
-                            <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
-                        </a>
-                        <div class="card-body">
-                            <h6 class="card-title">{{ work.title2 }}</h6>
-                        </div>
-                    </div>
-                </div>
-                {% for other_work in latest_works %}
-                    {% if other_work.id != work.id %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <a href="{% url 'work_detail' other_work.id %}">
-                                    <img src="{{ other_work.image2.url }}" class="card-img-top" alt="{{ other_work.title2 }}">
-                                </a>
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ other_work.title2 }}</h6>
+            {% if service2 %}
+                {% for service in service2 %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <a href="{% url 'service_detail' service.id %}">
+                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}">
+                            </a>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">{{ service.title }}</h3>
+                                <div class="text-left">
+                                    {% if service.description %}
+                                        <p>{{ service.description|truncatechars:60 }}</p>
+					<a href="{% url 'service_detail' service.id %}" class="btn btn-primary">Подробнее</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
+                    </div>
                 {% endfor %}
             {% else %}
-                <p>Нет доступных работ.</p>
+                <p class="text-center">Услуги временно недоступны.</p>
             {% endif %}
         </div>
+        <div class="text-center mt-4">
+        </div>
     </div>
+
+    <!-- Контакты -->
+    <div id="contact" class="container my-5 py-5">
+    <h2 class="section-title">Заинтересовала какая-то из услуг? Закажи её у нас!</h2>
+    <form id="contactForm">
+        <div class="mb-3 w-50 mx-auto">
+            <input type="text" class="form-control" id="name" placeholder="Введите ваше имя" required>
+        </div>
+        <div class="mb-3 w-50 mx-auto">
+            <input type="email" class="form-control" id="email" placeholder="Введите ваш email" required>
+        </div>
+        <div class="mb-3 w-50 mx-auto">
+            <textarea class="form-control" id="message" rows="5" placeholder="Введите ваше сообщение" required></textarea>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn svbtn-primary">Отправить</button>
+        </div>
+    </form>
+</div>
 
     <!-- Футер -->
     <footer class="footer">
@@ -375,26 +381,25 @@
                         <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/11/">Брендирование автомобилей</a></li>
                         <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/12/">Архитектурная подсветка зданий</a></li>
                         <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/13/">Ситилайт</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/servicess/15/">Полиграфия и сувенирная продукция</a></li>
+                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/15/">Полиграфия и сувенирная продукция</a></li>
                     </ul>
                 </div>
 
                 <!-- Последние работы -->
                 <div class="col-md-3">
                     <h5>Последние работы</h5>
-                    <div class="horizontal_line"></div>
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3" %}
                                 <div class="col-md-12 mb-3">
-                                    <a href="{% url 'work_detail' work.id %}" style="text-decoration: none;">
-                                        <div class="card">
+                                    <div class="card">
+                                        <a href="{% url 'work_detail' work.id %}">
                                             <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
                                             <div class="card-body">
                                                 <h6 class="card-title">{{ work.title2 }}</h6>
                                             </div>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    </div>
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -409,7 +414,7 @@
             <!-- Копирайт -->
             <div class="text-center">
     <div style="display: flex; align-items: center; justify-content: center;">
-        <p style="font-size: 12px; margin: 0;">&copy; 2025 <a class="footer_btn" href="http://127.0.0.1:8000/#">REKLAMGRAD</a></p>
+        <p style="font-size: 12px; margin: 0;">&copy; 2025 <a class="footer_btn" href="#">REKLAMGRAD</a></p>
         <a href="https://vk.com/reklamgrad" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
             <i class="fab fa-vk"></i>
         </a>
@@ -421,6 +426,7 @@
     <!-- Подключение Bootstrap JS и зависимости через CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
     <!-- Кастомные JS -->
     <script>
         window.addEventListener('load', () => {
@@ -434,6 +440,18 @@
                 content.style.display = 'block';
             }, 1000);
         });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Отменяем стандартное поведение формы
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    if (!email || !message) {
+        alert('Пожалуйста, заполните все поля.');
+        return;
+    }
+    alert('Ваше сообщение успешно отправлено!');
+});
 
     </script>
 </body>
