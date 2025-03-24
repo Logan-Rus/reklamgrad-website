@@ -1,4 +1,4 @@
-# Импорт функции path из django.urls.
+ # Импорт функции path из django.urls.
 # Функция path используется для создания URL-шаблонов в Django.
 from django.urls import path
 
@@ -10,7 +10,6 @@ from . import views
 urlpatterns = [
     # Главная страница
     path('', views.home, name='home'),
-
     # Детальная страница услуги
     # - service_id: ID услуги
     path('services/<int:service_id>/', views.service_detail, name='service_detail'),

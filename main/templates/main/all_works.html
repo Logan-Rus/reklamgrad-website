@@ -9,248 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="{% static 'favicon.ico' %}" />
-    <style>
-        /* Стили для экрана загрузки */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 20px;
-            opacity: 1;
-            transition: opacity 1.0s ease;
-	    z-index: 1000; 
-        }
-
-        #loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid DimGrey;
-            border-top: 5px solid white;
-            border-radius: 50%;
-            animation: spin 0.9s linear forwards;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-                display: none;
-            }
-        }
-
-        #content {
-            display: none;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 40px;
-            text-align: center;
-            color: black;
-        }
-
-        /* Общие стили для карточек */
-        .card {
-            background: none;
-            border: none;
-            box-shadow: none;
-            margin-bottom: 20px;
-        }
-
-        .card img {
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .card img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Стили для заголовков карточек */
-        .card-title {
-            font-size: 1.2rem;
-            color: #333;
-            margin-top: 10px;
-        }
-
-        /* Стили для текста карточек */
-        .card-text {
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .navbar {
-            background: rgba(0, 0, 0, 0.8);
-            font-size: 1.5rem;
-            line-height: 100%;
-            border-bottom: 1px solid white;
-            font-weight: bold;
-	    z-index: 999;
-        }
-
-        .navbar img {
-            max-width: 2%;
-        }
-
-        .footer {
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 20px 0;
-            flex-shrink: 0; /* Футер не сжимается */
-        }
-
-        .footer a {
-            color: #A9A9A9;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-size: 0.8rem;
-        }
-
-        .footer-menu a {
-            font-size: 0.8rem;
-        }
-
-        .footer_btn:hover {
-            color: white;
-        }
-
-        .footer-social a {
-            color: #A9A9A9;
-            margin: 0 10px;
-            font-size: 1.2rem;
-            transition: color 0.3s;
-        }
-
-        .footer-social a:hover {
-            color: white;
-        }
-
-        .footer .card {
-            margin-bottom: 10px;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-        }
-
-        .footer .card img {
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .footer .card-title {
-            color: white;
-            font-size: 0.8rem;
-        }
-
-        .footer-menu {
-            display: block !important;
-            list-style: none !important;
-            padding-left: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
-        .footer-menu .nav-item {
-            margin-bottom: 10px !important;
-        }
-
-        .footer-menu .nav-link {
-            color: #A9A9A9 !important;
-            text-decoration: none !important;
-            transition: color 0.3s !important;
-            font-size: 0.8rem !important;
-            display: block !important;
-        }
-
-        .footer-menu .nav-link:hover {
-            color: white !important;
-        }
-
-	.btn-icon {
-    padding: 5px;
-    text-align: center;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.0); /* Цвет VK */
-    width: 30px; /* Размер иконки */
-    height: 30px; /* Размер иконки */
-}
-
-.btn-icon:hover {
-    background-color: #3a5f8a; /* Цвет VK при наведении */
-}
-
-        .btn-primary {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-color: #A9A9A9;
-            padding: 10px 20px;
-            transition: background-color 0.3s;
-            color: black;
-        }
-
-        .btn-primary:hover {
-            background-color: white;
-            color: black;
-        }
-
-        .svbtn-primary {
-            background-color: black;
-            color: white;
-            text-align: center;
-        }
-
-        .svbtn-primary:hover {
-            background-color: #A9A9A9;
-            color: white;
-        }
-
-        .section-text {
-            font-size: 0.9rem;
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .container {
-            flex: 1; /* Контент занимает всё доступное пространство */
-        }
-
-        /* Стили для карточек в разделе "Наши работы" */
-        #works .card {
-            background: none;
-            border: none;
-            box-shadow: none;
-            margin-bottom: 20px;
-        }
-
-        #works .card img {
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        #works .card img:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
 <body>
     <!-- Экран загрузки -->
@@ -287,9 +46,10 @@
         </div>
     </nav>
 
-    <!-- Портфолио -->
-    <div class="container">
-	<h2 class="section-title" style="margin-top: 100px;">Все наши работы</h2>
+    <!-- Наши работы -->
+    <div id="works" class="container my-3 py-3">
+	<p> {{ page_work.title |safe }}</p>
+    <p>{{ page_work.description |safe}}</p>
         <div class="row">
             {% if work2 %}
                 {% for work in work2 %}
@@ -298,7 +58,7 @@
                             <div class="card">
                                 <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
                                 <div class="card-body">
-                                    <h6 class="card-title">{{ work.title2 }}</h6>
+                                    <h6 class="card-title">{{ work.title2|safe }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -316,16 +76,15 @@
             <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
                 <!-- Информация о компании -->
                 <div class="col-md-3" id="inv">
-                    <h5>Рекламное агентство <br /> "Рекламград"</h5>
-                    <div class="horizontal_line"></div>
-                    <p style="font-size: 0.9rem">Изготовление рекламной продукции и <br /> размещение рекламы в городах России.</p>
-                    <p><strong>📞Телефон:</strong> <a class="nav-link" href="tel:+79157777314">+7 (915) 777-73-14</a></p>
-                    <p><strong>📧Email:</strong> <a class="nav-link" href="mailto:reklamgrad@mail.ru">reklamgrad@mail.ru</a></p>
+                    <p>{{ page_work.footer_titleCompany |safe }}</p>
+                    <p>{{ page_work.footer_descriptionCompany |safe }}</p>
+                    <p>{{ page_work.footer_titleNumber |safe }} <a class="nav-link" href="tel:+79157777314">+7 (915) 777-73-14</a></p>
+                    <p>{{ page_work.footer_titleEmail |safe}} <a class="nav-link" href="mailto:reklamgrad@mail.ru">reklamgrad@mail.ru</a></p>
                 </div>
 
                 <!-- Меню -->
                 <div class="col-md-3">
-                    <h5>Меню</h5>
+                    <p>{{ page_work.footer_titleMenu |safe }}</p>
                     <div class="horizontal_line"></div>
                     <ul class="footer-menu" style="padding-left: 0; list-style: none;">
                         <li class="nav-item">
@@ -348,7 +107,7 @@
 
                 <!-- Наши услуги -->
                 <div class="col-md-3">
-                    <h5>Наши услуги</h5>
+                    <p>{{ page_work.footer_titleMenu2 |safe}}</p>
                     <ul style="padding-left: 0; list-style: none;">
                         <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/2/">Вывески</a></li>
                         <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/3/">Тривижн</a></li>
@@ -366,7 +125,7 @@
 
                 <!-- Последние работы -->
                 <div class="col-md-3">
-                    <h5>Последние работы</h5>
+                    <p> {{ page_work.footer_titleMenu3 |safe }}</p>
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3" %}
@@ -375,7 +134,7 @@
                                         <a href="{% url 'work_detail' work.id %}">
                                             <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
                                             <div class="card-body">
-                                                <h6 class="card-title">{{ work.title2 }}</h6>
+                                                <h6 class="card-title">{{ work.title2 |safe }}</h6>
                                             </div>
                                         </a>
                                     </div>
@@ -402,23 +161,9 @@
 
     </footer>
 
-    <!-- Подключение Bootstrap JS и зависимости через CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <!-- Кастомные JS -->
-    <script>
-        window.addEventListener('load', () => {
-            const loadingScreen = document.getElementById('loading-screen');
-            const content = document.getElementById('content');
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>    
+<script src="{% static 'js/style.js' %}"></script>
 
-            loadingScreen.style.opacity = '0';
-
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                content.style.display = 'block';
-            }, 1000);
-        });
-
-    </script>
 </body>
 </html>
