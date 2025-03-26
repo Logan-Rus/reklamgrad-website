@@ -1,22 +1,20 @@
-# Импорт модуля admin из django.contrib.
-# Этот модуль предоставляет функциональность административной панели Django.
 from django.contrib import admin
+from .models import (Work, Service, MainPage, MenuItem, ContactRequest)
 
-# Импорт моделей Work и Service из текущего приложения (файл models.py).
-# Эти модели будут зарегистрированы в административной панели для управления через веб-интерфейс.
-from .models import Work, Service, MainPage, PageService, PageWork
+class MenuItemInline(admin.TabularInline):
+    model = MenuItem
+    extra = 1
 
-# Регистрация модели Service в админке Django
-admin.site.register(Service)
+@admin.register(MainPage)
+class MainPageAdmin(admin.ModelAdmin):
+    inlines = [MenuItemInline]
 
-# Регистрация модели Work в админке Django
+@admin.register(ContactRequest)
+class ContactRequestAdmin(admin.ModelAdmin):
+    list_display = ('email', 'message', 'created_at')
+    search_fields = ('email', 'message')
+    list_filter = ('created_at',)
+
+# Простая регистрация остальных моделей
 admin.site.register(Work)
-
-# Регистрация модели MainPage в админке Django
-admin.site.register(MainPage)
-
-# Регистрация модели PageService в админке Django
-admin.site.register(PageService)
-
-# Регистрация модели PageWork в админке Django
-admin.site.register(PageWork)
+admin.site.register(Service)

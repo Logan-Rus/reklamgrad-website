@@ -3,10 +3,28 @@
 # - get_object_or_404: используется для получения объекта из базы данных или вызова ошибки 404, если объект не найден.
 from django.shortcuts import render, get_object_or_404
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 # Импорт моделей из текущего приложения (файл models.py).
 # Эти модели представляют данные, с которыми будут работать представления (views).
-from .models import Work, Service, MainPage, PageService, PageWork
+from .models import Work, Service, MainPage, ContactRequest
 
+
+@require_POST  # Разрешаем только POST-запросы
+def contact_submit(request):
+    email = request.POST.get('email')
+    message = request.POST.get('message')
+
+    if not email or not message:
+        return JsonResponse(
+            {'status': 'error', 'message': 'Заполните все поля!'},
+            status=400
+        )
+
+    # Сохраняем заявку в базу
+    ContactRequest.objects.create(email=email, message=message)
+
+    return JsonResponse({'status': 'success'})
 
 def home(request):
     """
@@ -54,10 +72,11 @@ def service_detail(request, service_id):
     Возвращает:
         HttpResponse: Рендерит шаблон 'main/service_detail.html' с переданным контекстом.
     """
+    main_page = MainPage.objects.first()
     service = get_object_or_404(Service, id=service_id)
+    services = Service.objects.all()
     latest_works = Work.objects.all().order_by('id')
-    services_page = PageService.objects.first()
-    return render(request, 'main/service_detail.html', {'service': service, 'latest_works': latest_works, 'services_page': services_page,})
+    return render(request, 'main/service_detail.html', {'service': service, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
 
 
 def all_services(request):
@@ -72,10 +91,10 @@ def all_services(request):
     Возвращает:
         HttpResponse: Рендерит шаблон 'main/all_Services.html' с переданным контекстом.
     """
+    main_page = MainPage.objects.first()
     service2 = Service.objects.all()
     latest_works = Work.objects.all().order_by('id')
-    services_page = PageService.objects.first()
-    return render(request, 'main/all_Services.html', {'service2': service2, 'latest_works': latest_works, 'services_page': services_page, })
+    return render(request, 'main/all_Services.html', {'service2': service2, 'latest_works': latest_works, 'main_page': main_page, })
 
 
 def work_detail(request, work_id):
@@ -94,10 +113,11 @@ def work_detail(request, work_id):
     Возвращает:
         HttpResponse: Рендерит шаблон 'main/work_detail.html' с переданным контекстом.
     """
+    main_page = MainPage.objects.first()
     latest_works = Work.objects.all().order_by('id')
+    services = Service.objects.all()
     work = get_object_or_404(Work, id=work_id)
-    page_work = PageWork.objects.first()
-    return render(request, 'main/work_detail.html', {'work': work, 'latest_works': latest_works, 'page_work': page_work,})
+    return render(request, 'main/work_detail.html', {'work': work, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
 
 
 def all_works(request):
@@ -112,8 +132,9 @@ def all_works(request):
     Возвращает:
         HttpResponse: Рендерит шаблон 'main/all_works.html' с переданным контекстом.
     """
+    main_page = MainPage.objects.first()
     latest_works = Work.objects.all().order_by('id')
+    services = Service.objects.all()
     work2 = Work.objects.all()
-    page_work = PageWork.objects.first()
-    return render(request, 'main/all_works.html', {'work2': work2, 'latest_works': latest_works, 'page_work': page_work,})
+    return render(request, 'main/all_works.html', {'work2': work2, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
 

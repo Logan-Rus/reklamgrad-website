@@ -31,15 +31,3 @@ loadingScreen.classList.add('hidden'); // Полностью скрыть экр
 content.style.display = 'block'; // Показать основной контент
 }, 1000); // Время должно совпадать с длительностью анимации
 });;
-
-document.querySelector('form').addEventListener('submit', function(event) {
-event.preventDefault();
-const email = document.getElementById('email').value;
-const message = document.getElementById('message').value;
-
-if (!email || !message) {
-alert('Пожалуйста, заполните все поля.');
-return;
-}
-alert('Ваше сообщение успешно отправлено!');
-});

@@ -5,6 +5,7 @@ from django.urls import path
 # Импорт модуля views из текущего приложения.
 # В этом модуле находятся функции (представления), которые обрабатывают запросы и возвращают ответы.
 from . import views
+from .views import contact_submit
 
 # Определение URL-шаблонов для приложения
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
 
     # Страница со всеми услугами
     path('services/', views.all_services, name='all_services'),
+    path('contact-submit/', views.contact_submit, name='contact_submit'),
 ]

@@ -26,21 +26,19 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item me-5">
-                        <a class="nav-link" href="http://127.0.0.1:8000/#">Главная</a>
-                    </li>
-                    <li class="nav-item me-5">
-                        <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
-                    </li>
-                    <li class="nav-item me-5">
-                        <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
-                    </li>
-                    <li class="nav-item me-5">
-                        <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
-                    </li>
-                    <li class="nav-item me-5">
-                        <a class="nav-link" href="http://127.0.0.1:8000/#contact">Контакты</a>
-                    </li>
+                    {% if main_page.menu_items.all %}
+                        {% for item in main_page.menu_items.all %}
+                            <li class="nav-item me-5">
+                                <a class="nav-link" href="{{ item.url }}" {% if item.is_external %}target="_blank"{% endif %}>
+                                    {{ item.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="nav-item me-5">
+                            <span class="text-warning">Нет пунктов меню!</span>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -48,8 +46,8 @@
 
     <!-- Наши работы -->
     <div id="works" class="container my-3 py-3">
-	<p> {{ page_work.title |safe }}</p>
-    <p>{{ page_work.description |safe}}</p>
+        <p class="section-title">{{ main_page.title_work |safe }}</p>
+        <p>{{ main_page.description_work |safe }}</p>
         <div class="row">
             {% if work2 %}
                 {% for work in work2 %}
@@ -70,62 +68,71 @@
         </div>
     </div>
 
-    <!-- Футер -->
+        <!-- Футер -->
     <footer class="footer">
         <div class="container">
             <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
                 <!-- Информация о компании -->
                 <div class="col-md-3" id="inv">
-                    <p>{{ page_work.footer_titleCompany |safe }}</p>
-                    <p>{{ page_work.footer_descriptionCompany |safe }}</p>
-                    <p>{{ page_work.footer_titleNumber |safe }} <a class="nav-link" href="tel:+79157777314">+7 (915) 777-73-14</a></p>
-                    <p>{{ page_work.footer_titleEmail |safe}} <a class="nav-link" href="mailto:reklamgrad@mail.ru">reklamgrad@mail.ru</a></p>
+                    {{ main_page.footer_titleCompany|safe }}
+                    {{ main_page.footer_descriptionCompany|safe }}
+                    <p>
+                        {{ main_page.footer_titleNumber|safe }}
+                        <a class="nav-link" href="tel:{{ main_page.footer_phone }}">
+                            {{ main_page.footer_phone }}
+                        </a>
+                    </p>
+                    <p>
+                        {{ main_page.footer_titleEmail|safe }}
+                        <a class="nav-link" href="mailto:{{ main_page.footer_email }}">
+                            {{ main_page.footer_email }}
+                        </a>
+                    </p>
                 </div>
-
+    
                 <!-- Меню -->
                 <div class="col-md-3">
-                    <p>{{ page_work.footer_titleMenu |safe }}</p>
-                    <div class="horizontal_line"></div>
-                    <ul class="footer-menu" style="padding-left: 0; list-style: none;">
-                        <li class="nav-item">
-                            <a class="nav-link" href="http://127.0.0.1:8000/#">Главная</a>
+                {{ main_page.footer_titleMenu|safe }}
+                <ul class="footer-menu" style="padding-left: 0; list-style: none;">
+                {% if main_page.menu_items.all %}
+                        {% for item in main_page.menu_items.all %}
+                            <li class="nav-item me-5">
+                                <a class="nav-link" href="{{ item.url }}" {% if item.is_external %}target="_blank"{% endif %}>
+                                    {{ item.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="nav-item me-5">
+                            <span class="text-warning">Нет пунктов меню!</span>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="http://127.0.0.1:8000/#about">О нас</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'all_services' %}" class="nav-link">Наши услуги</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'all_works' %}" class="nav-link">Наши работы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="http://127.0.0.1:8000/#contact">Контакты</a>
-                        </li>
-                    </ul>
+                    {% endif %}
+                </ul>
                 </div>
-
+    
                 <!-- Наши услуги -->
                 <div class="col-md-3">
-                    <p>{{ page_work.footer_titleMenu2 |safe}}</p>
-                    <ul style="padding-left: 0; list-style: none;">
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/2/">Вывески</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/3/">Тривижн</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/4/">Уличная мебель</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/5/">Рекламные щиты</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/7/">Световые короба</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/8/">Широкоформатная печать</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/10/">Печать и штампы</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/11/">Брендирование автомобилей</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/12/">Архитектурная подсветка зданий</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/13/">Ситилайт</a></li>
-                        <li style="margin-bottom: 15px;"><a class="nav-link" href="http://127.0.0.1:8000/services/15/">Полиграфия и сувенирная продукция</a></li>
+                    {{ main_page.footer_titleMenu2|safe }}
+                    <ul class="footer-menu" style="padding-left: 0; list-style: none;">
+                        {% if services %}
+                            {% for service in services %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'service_detail' service.id %}">
+                                        {{ service.title|safe|striptags }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="nav-item">
+                                <span class="text-warning">Услуги временно недоступны</span>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
-
+    
                 <!-- Последние работы -->
                 <div class="col-md-3">
-                    <p> {{ page_work.footer_titleMenu3 |safe }}</p>
+                    {{ main_page.footer_titleMenu3|safe }}
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3" %}
@@ -134,7 +141,7 @@
                                         <a href="{% url 'work_detail' work.id %}">
                                             <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
                                             <div class="card-body">
-                                                <h6 class="card-title">{{ work.title2 |safe }}</h6>
+                                                <h6 class="card-title">{{ work.title2|safe }}</h6>
                                             </div>
                                         </a>
                                     </div>
@@ -146,19 +153,17 @@
                     </div>
                 </div>
             </div>
-
             <hr>
-
             <!-- Копирайт -->
             <div class="text-center">
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <p style="font-size: 12px; margin: 0;">&copy; 2025 <a class="footer_btn" href="#">REKLAMGRAD</a></p>
-        <a href="https://vk.com/reklamgrad" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
-            <i class="fab fa-vk"></i>
-        </a>
-    </div>
-</div>
-
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    {{ main_page.footer_copyright|safe }}
+                    <a href="{{ main_page.footer_vk_url }}" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -271,7 +271,7 @@
         }
 
         .svbtn-primary {
-            background-color: #404040;;
+            background-color: #404040;
             color: white;
         }
 
@@ -296,9 +296,11 @@
         .footer-menu a {
             font-size: 0.8rem;
         }
-
+        .footer_btn {
+            color: #A9A9A9;
+        }
         .footer_btn:hover {
-            color: white;
+            color: white !important;
         }
 
         .footer-social a {
