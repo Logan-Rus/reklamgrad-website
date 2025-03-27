@@ -3,8 +3,8 @@
 # - get_object_or_404: используется для получения объекта из базы данных или вызова ошибки 404, если объект не найден.
 from django.shortcuts import render, get_object_or_404
 
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.http import JsonResponse # Декоратор для ограничения типа запроса
+from django.views.decorators.http import require_POST # Класс для возврата JSON-ответов
 # Импорт моделей из текущего приложения (файл models.py).
 # Эти модели представляют данные, с которыми будут работать представления (views).
 from .models import Work, Service, MainPage, ContactRequest
@@ -12,10 +12,24 @@ from .models import Work, Service, MainPage, ContactRequest
 
 @require_POST  # Разрешаем только POST-запросы
 def contact_submit(request):
+"""
+    Функция для обработки данных контактной формы.
+    
+    Принимает POST-запрос с параметрами:
+    - email (строка): email пользователя
+    - message (строка): текст сообщения
+    
+    Возвращает JSON-ответ:
+    - При успехе: {'status': 'success'}
+    - При ошибке: {'status': 'error', 'message': 'Текст ошибки'} с кодом 400
+"""
     email = request.POST.get('email')
     message = request.POST.get('message')
 
+# Проверяем, что оба поля заполнены
     if not email or not message:
+ # Возвращаем ответ об ошибке в JSON-формате
+ # status=400 означает "Bad Request" - некорректный запрос
         return JsonResponse(
             {'status': 'error', 'message': 'Заполните все поля!'},
             status=400
