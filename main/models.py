@@ -130,20 +130,56 @@ class MainPage(models.Model):
         return self.title
 
 class MenuItem(models.Model):
-    main_page = models.ForeignKey(MainPage, on_delete=models.CASCADE, related_name='menu_items')
-    title = models.CharField(max_length=100, verbose_name="Название пункта навигационно меню")
-    url = models.CharField(max_length=200, verbose_name="URL или якорь")
+    """
+    Класс для хранения пунктов навигационного меню.
+    
+    Поля:
+        - main_page (ForeignKey): Связь с главной страницей, к которой относится пункт меню. При удалении главной страницы все связанные пункты меню удаляются (CASCADE).
+        - title (CharField): Название пункта меню (максимальная длина - 100 символов).
+        - url (CharField): URL-адрес или якорная ссылка для пункта меню (максимальная длина - 200 символов).
+    """
+    
+    main_page = models.ForeignKey(
+        'MainPage', 
+        on_delete=models.CASCADE, 
+        related_name='menu_items',
+        verbose_name="Главная страница"
+    )
+    title = models.CharField(
+        max_length=100, 
+        verbose_name="Название пункта навигационного меню"
+    )
+    url = models.CharField(
+        max_length=200, 
+        verbose_name="URL или якорь"
+    )
 
     class Meta:
         verbose_name = "Пункт навигационного меню"
         verbose_name_plural = "Пункты навигационного меню"
+        # По умолчанию Django будет использовать ordering = ['id']
 
     def __str__(self):
+        """Строковое представление объекта для удобного отображения в админке и shell."""
         return self.title
 
+
 class ContactRequest(models.Model):
-    email = models.EmailField(verbose_name="Email")
-    message = models.TextField(verbose_name="Сообщение")
+    """
+    Класс для хранения контактных заявок от пользователей.
+    
+    Поля:
+      - email (EmailField): Электронная почта отправителя.
+      - message (TextField): Текст сообщения от пользователя.
+      - created_at (DateTimeField): Дата и время создания заявки (автоматически устанавливается при создании).
+    """
+    
+    email = models.EmailField(
+        verbose_name="Email"
+    )
+    message = models.TextField(
+        verbose_name="Сообщение"
+    )
     created_at = models.DateTimeField(
         default=timezone.now,
         verbose_name="Дата отправки"
@@ -152,7 +188,8 @@ class ContactRequest(models.Model):
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
-        ordering = ['-created_at']  # Сортировка новых заявок сверху
+        ordering = ['-created_at']  # Сортировка по убыванию даты (новые заявки сверху)
 
     def __str__(self):
+        """Строковое представление объекта в формате: 'Заявка от email (дата)'."""
         return f"Заявка от {self.email} ({self.created_at.strftime('%d.%m.%Y %H:%M')})"
