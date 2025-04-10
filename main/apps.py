@@ -6,14 +6,14 @@ from django.apps import AppConfig
 
 class MainConfig(AppConfig):
     """
-    Класс конфигурации для приложения 'main'.
+    Класс конфигурации для приложения 'my_main'.
 
     Атрибуты:
         - default_auto_field (str): Указывает тип автоматически создаваемого первичного ключа.
           По умолчанию используется 'django.db.models.BigAutoField', который представляет
           собой 64-битное целое число.
         - name (str): Имя приложения. Указывает Django, к какому приложению относится
-          эта конфигурация. В данном случае это 'main'.
+          эта конфигурация. В данном случае это 'my_main'.
     """
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'main'

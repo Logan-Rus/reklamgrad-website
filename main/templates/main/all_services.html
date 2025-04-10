@@ -18,42 +18,18 @@
     </div>
 
     <!-- Навигационная панель -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <img src="{% static 'uv2.png' %}" alt="Logo"><a class="navbar-brand" href="http://127.0.0.1:8000/#">REKLAMGRAD</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if main_page.menu_items.all %}
-                        {% for item in main_page.menu_items.all %}
-                            <li class="nav-item me-5">
-                                <a class="nav-link" href="{{ item.url }}" {% if item.is_external %}target="_blank"{% endif %}>
-                                    {{ item.title }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="nav-item me-5">
-                            <span class="text-warning">Нет пунктов меню!</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'navbar.html' %}
 
     <!-- Все наши услуги -->
     <div id="service" class="container my-3 py-3">
         <p class="section-title">{{ main_page.title_service |safe }}</p>
         <p>{{ main_page.description_service |safe }}</p>
         <div class="row">
-            {% if service2 %}
-                {% for service in service2 %}
+            {% if services %}
+                {% for service in services %}
                     <div class="col-md-3 mb-3 ">
                         <div class="card">
-                            <a href="{% url 'service_detail' service.id %}">
+                            <a href="{% url 'service_detail' object_id=service.id %}">
                                 <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}">
                             </a>
                             <div class="card-body text-center">
@@ -61,7 +37,7 @@
                                 <div class="text-left">
                                     {% if service.description %}
                                         <p>{{ service.description|truncatechars:60|safe|striptags }}</p>
-					            <a href="{% url 'service_detail' service.id %}" class="btn btn-primary">Подробнее</a>
+					            <a href="{% url 'service_detail' object_id=service.id %}" class="btn btn-primary">Подробнее</a>
                                     {% endif %}
                                 </div>
                             </div>
@@ -78,7 +54,7 @@
 
     <!-- Контакты -->
     <div id="contact" class="container my-5 py-5">
-        <p>{{ services_page.contact_title|safe }}</p>
+        <p>{{ main_page.contact_title|safe }}</p>
         <form method="POST" action="{% url 'contact_submit' %}" id="contactForm">
             {% csrf_token %}
             <div class="mb-3 w-50 mx-auto">
@@ -95,170 +71,11 @@
     </div>
 
     <!-- Футер -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
-                <!-- Информация о компании -->
-                <div class="col-md-3" id="inv">
-                    {{ main_page.footer_titleCompany|safe }}
-                    {{ main_page.footer_descriptionCompany|safe }}
-                    <p>
-                        {{ main_page.footer_titleNumber|safe }}
-                        <a class="nav-link" href="tel:{{ main_page.footer_phone }}">
-                            {{ main_page.footer_phone }}
-                        </a>
-                    </p>
-                    <p>
-                        {{ main_page.footer_titleEmail|safe }}
-                        <a class="nav-link" href="mailto:{{ main_page.footer_email }}">
-                            {{ main_page.footer_email }}
-                        </a>
-                    </p>
-                </div>
-    
-                <!-- Меню -->
-                <div class="col-md-3">
-                {{ main_page.footer_titleMenu|safe }}
-                <ul class="footer-menu" style="padding-left: 0; list-style: none;">
-                {% if main_page.menu_items.all %}
-                        {% for item in main_page.menu_items.all %}
-                            <li class="nav-item me-5">
-                                <a class="nav-link" href="{{ item.url }}" {% if item.is_external %}target="_blank"{% endif %}>
-                                    {{ item.title }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="nav-item me-5">
-                            <span class="text-warning">Нет пунктов меню!</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-    
-                <!-- Наши услуги -->
-                <div class="col-md-3">
-                    {{ main_page.footer_titleMenu2|safe }}
-                    <ul class="footer-menu" style="padding-left: 0; list-style: none;">
-                        {% if service2 %}
-                            {% for service in service2 %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'service_detail' service.id %}">
-                                        {{ service.title|safe|striptags }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li class="nav-item">
-                                <span class="text-warning">Услуги временно недоступны</span>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-    
-                <!-- Последние работы -->
-                <div class="col-md-3">
-                    {{ main_page.footer_titleMenu3|safe }}
-                    <div class="row">
-                        {% if latest_works %}
-                            {% for work in latest_works|slice:":3" %}
-                                <div class="col-md-12 mb-3">
-                                    <div class="card">
-                                        <a href="{% url 'work_detail' work.id %}">
-                                            <img src="{{ work.image2.url }}" class="card-img-top" alt="{{ work.title2 }}">
-                                            <div class="card-body">
-                                                <h6 class="card-title">{{ work.title2|safe }}</h6>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <p>Нет доступных работ.</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <!-- Копирайт -->
-            <div class="text-center">
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    {{ main_page.footer_copyright|safe }}
-                    <a href="{{ main_page.footer_vk_url }}" target="_blank" class="btn btn-icon" style="margin-left: 80%;" title="Мы в VK">
-                        <i class="fab fa-vk"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    {% include 'footer.html' %}
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>    
 <script src="{% static 'js/style.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contactForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const formMessage = document.getElementById('formMessage');
-
-    if (!form) return;
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Показать состояние загрузки
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Отправка...
-        `;
-        
-        try {
-            // Сбор данных формы
-            const formData = new FormData(form);
-            
-            // Отправка на сервер
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    'Accept': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'Ошибка сервера');
-            }
-
-            // Успешная отправка
-            showMessage('success', '✔️ Сообщение успешно отправлено!');
-            form.reset();
-            
-        } catch (error) {
-            console.error('Ошибка:', error);
-            showMessage('danger', `❌ ${error.message}`);
-        } finally {
-            // Восстановить кнопку
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Отправить';
-        }
-    });
-
-    function showMessage(type, text) {
-        formMessage.className = `mt-3 alert alert-${type}`;
-        formMessage.textContent = text;
-        formMessage.classList.remove('d-none');
-        
-        // Автоматическое скрытие через 5 сек
-        setTimeout(() => {
-            formMessage.classList.add('d-none');
-        }, 5000);
-    }
-});
-</script>
 
 </body>
 </html>

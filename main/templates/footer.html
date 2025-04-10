@@ -1,0 +1,111 @@
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Подключение шрифта Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Подключение Bootstrap CSS через CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключение Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Кастомные стили -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+<footer class="footer">
+        <div class="container-fluid">
+            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                <!-- Информация о компании -->
+                <div class="col-md-3" id="inv">
+                    {{ footer.company_title |safe }}
+                    {{ footer.company_description |safe }}
+                    <p>
+                        {{ footer.contact_phone_title |safe }}
+                        <a class="nav-link" href="tel:{{ footer.contact_phone }}">
+                            {{ footer.contact_phone }}
+                        </a>
+                    </p>
+                    <p>
+                        {{ footer.contact_email_title |safe }}
+                        <a class="nav-link" href="mailto:{{ footer.contact_email }}">
+                            {{ footer.contact_email }}
+                        </a>
+                    </p>
+                </div>
+    
+                <!-- Меню -->
+                <div class="col-md-3">
+                {{ footer.menu_nav_title |safe }}
+                <ul class="navbar-nav ms-auto">
+                    {% for item in menu_items %}
+                <li class="nav-item me-5">
+                    <a class="nav-link" href="{{ item.url }}">
+                    {{ item.title }}
+                    </a>
+                </li>
+                    {% empty %}
+                <li class="nav-item me-5">
+                    <span class="text-warning">Нет пунктов меню!</span>
+                </li>
+                    {% endfor %}
+                </ul>
+                </div>
+    
+                <!-- Наши услуги -->
+                <div class="col-md-3">
+                    {{ footer.menu_services_title |safe }}
+                    <ul class="footer-menu" style="padding-left: 0; list-style: none;">
+                        {% if services %}
+                            {% for service in services %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'service_detail' object_id=service.id %}">
+                                        {{ service.title|safe|striptags }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="nav-item">
+                                <span class="text-warning">Услуги временно недоступны</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+    
+                <!-- Последние работы -->
+                <div class="col-md-3">
+                    {{ footer.menu_works_title |safe }}
+                    <div class="row">
+                        {% if latest_works %}
+                            {% for work in latest_works|slice:":3"  %}
+                                <div class="col-md-12 mb-3">
+                                    <div class="card">
+                                        <a href="{% url 'work_detail' work.id %}">
+                                            <img src="{{ work.image.url }}" class="card-img-top" alt="{{ work.title }}">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ work.title|safe }}</h6>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>Нет доступных работ.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- Копирайт -->
+            <div class="text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-center">{{ footer.copyright_text |safe }}</div>
+                    <a href="{{ footer.social_vk_url }}" target="_blank" class="btn btn-icon " title="Мы в VK">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

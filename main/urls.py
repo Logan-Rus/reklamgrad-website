@@ -11,18 +11,16 @@ from .views import contact_submit
 urlpatterns = [
     # Главная страница
     path('', views.home, name='home'),
+    path('page/<slug:slug>/', views.static_page_view, name='static_page'),
     # Детальная страница услуги
     # - service_id: ID услуги
-    path('services/<int:service_id>/', views.service_detail, name='service_detail'),
+    path('service/<int:object_id>/', views.detail_view, {'model_name': 'service'}, name='service_detail'),
+    path('work/<int:object_id>/', views.detail_view, {'model_name': 'work'}, name='work_detail'),
 
-    # Детальная страница работы
-    # - work_id: ID работы
-    path('works/<int:work_id>/', views.work_detail, name='work_detail'),
+    # Списки
+    path('services/', views.list_view, {'model_name': 'services'}, name='all_services'),
+    path('works/', views.list_view, {'model_name': 'works'}, name='all_works'),
 
-    # Страница со всеми работами
-    path('works/', views.all_works, name='all_works'),
-
-    # Страница со всеми услугами
-    path('services/', views.all_services, name='all_services'),
     path('contact-submit/', views.contact_submit, name='contact_submit'),
+
 ]

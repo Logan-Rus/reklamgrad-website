@@ -6,6 +6,22 @@ from django_ckeditor_5.fields import CKEditor5Field
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+class StaticPage(models.Model):
+    title = CKEditor5Field(max_length=250, verbose_name="Заголовок")
+    slug = models.SlugField(max_length=200, unique=True, verbose_name="URL")
+    content = CKEditor5Field(verbose_name="Содержание")
+    meta_title = CKEditor5Field(max_length=250, blank=True, verbose_name="Мета-заголовок")
+    meta_description = CKEditor5Field(blank=True, verbose_name="Мета-описание")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Статическая страница"
+        verbose_name_plural = "Статические страницы"
+
 class Work(models.Model):
     """
     Класс:
@@ -17,21 +33,21 @@ class Work(models.Model):
         - description2: Подробное описание работы.
         - image2: Изображение, связанное с работой.
     """
-    title2 = CKEditor5Field(max_length=200, verbose_name="Название работы")
+    title = CKEditor5Field(max_length=200, verbose_name="Название работы")
     tip = CKEditor5Field(verbose_name="Тип работы", blank=True, null=True)
-    description2 = CKEditor5Field(verbose_name="Описание", blank=True, default="")
-    image2 = models.ImageField(upload_to='works/', verbose_name="Изображение")
+    description = CKEditor5Field(verbose_name="Описание", blank=True, default="")
+    image = models.ImageField(upload_to='works/', verbose_name="Изображение")
 
     class Meta:
-        verbose_name = "Данные об разделе Работы"
-        verbose_name_plural = "Данные об разделе Работы"
+        verbose_name = "Данные об разделе Портфолио"
+        verbose_name_plural = "Данные об разделе Портфолио"
 
     def __str__(self):
         """
         Функция __str__:
                 - self.title2: Возвращает название работы для отображения.
         """
-        return self.title2
+        return self.title
 
 class Service(models.Model):
     """
@@ -97,26 +113,6 @@ class MainPage(models.Model):
     description_work = CKEditor5Field(verbose_name="Описание третьего раздела", blank=True, null=True)
 
     contact_title = CKEditor5Field(verbose_name="Заголовок формы обратной связи", blank=True, null=True)
-    contact_text = CKEditor5Field(verbose_name="Текст формы обратной связи", blank=True, null=True)
-
-    # Футер - информация о компании
-    footer_titleCompany = CKEditor5Field("Название компании", blank=True, null=True)
-    footer_descriptionCompany = CKEditor5Field("Описание компании", blank=True, null=True)
-    footer_titleNumber = CKEditor5Field("Заголовок телефона", blank=True, null=True)
-    footer_phone = models.CharField("Телефон", max_length=20, default="+7 (915) 777-73-14")
-    footer_titleEmail = CKEditor5Field("Заголовок email", blank=True, null=True)
-    footer_email = models.EmailField("Email", default="reklamgrad@mail.ru")
-
-    # Футер - меню
-    footer_titleMenu = CKEditor5Field("Заголовок меню навигации", blank=True, null=True)
-    footer_titleMenu2 = CKEditor5Field("Заголовок меню услуг", blank=True, null=True)
-    footer_titleMenu3 = CKEditor5Field("Заголовок меню работ", blank=True, null=True)
-
-    # Социальные сети
-    footer_vk_url = models.URLField("Ссылка VK", default="https://vk.com/reklamgrad")
-
-    # Копирайт
-    footer_copyright = CKEditor5Field("Текст копирайта", default='&copy; 2025&nbsp; <a class="footer_btn" href="http://127.0.0.1:8000/#">REKLAMGRAD</a>')
 
     class Meta:
         verbose_name = "Главная страница"
@@ -130,34 +126,14 @@ class MainPage(models.Model):
         return self.title
 
 class MenuItem(models.Model):
-    """
-    Класс для хранения пунктов навигационного меню.
-    
-    Поля:
-        - main_page (ForeignKey): Связь с главной страницей, к которой относится пункт меню. При удалении главной страницы все связанные пункты меню удаляются (CASCADE).
-        - title (CharField): Название пункта меню (максимальная длина - 100 символов).
-        - url (CharField): URL-адрес или якорная ссылка для пункта меню (максимальная длина - 200 символов).
-    """
-    
-    main_page = models.ForeignKey(
-        'MainPage', 
-        on_delete=models.CASCADE, 
-        related_name='menu_items',
-        verbose_name="Главная страница"
-    )
-    title = models.CharField(
-        max_length=100, 
-        verbose_name="Название пункта навигационного меню"
-    )
-    url = models.CharField(
-        max_length=200, 
-        verbose_name="URL или якорь"
-    )
+    title = models.CharField(max_length=100, verbose_name="Название")
+    url = models.CharField(max_length=200, verbose_name="URL или якорь")
+    order = models.PositiveIntegerField(default=0)  # Для сортировки
 
     class Meta:
+        ordering = ['order']
         verbose_name = "Пункт навигационного меню"
         verbose_name_plural = "Пункты навигационного меню"
-        # По умолчанию Django будет использовать ordering = ['id']
 
     def __str__(self):
         """Строковое представление объекта для удобного отображения в админке и shell."""
@@ -193,3 +169,92 @@ class ContactRequest(models.Model):
     def __str__(self):
         """Строковое представление объекта в формате: 'Заявка от email (дата)'."""
         return f"Заявка от {self.email} ({self.created_at.strftime('%d.%m.%Y %H:%M')})"
+
+
+class Footer(models.Model):
+    """
+    Модель для хранения информации футера сайта
+    """
+    # Секция "О компании"
+    company_title = CKEditor5Field(
+        "Название компании",
+        blank=True,
+        null=True,
+        default=''
+    )
+    company_description = CKEditor5Field(
+        "Описание компании",
+        blank=True,
+        null=True
+    )
+
+    # Контактная информация
+    contact_phone_title = CKEditor5Field(
+        "Заголовок телефона",
+        blank=True,
+        null=True,
+        default=''
+    )
+    contact_phone = models.CharField(
+        "Телефон",
+        max_length=20,
+        default=""
+    )
+    contact_email_title = CKEditor5Field(
+        "Заголовок email",
+        blank=True,
+        null=True,
+        default=''
+    )
+    contact_email = models.EmailField(
+        "Email",
+        default=""
+    )
+
+    # Меню футера
+    menu_nav_title = CKEditor5Field(
+        "Заголовок меню навигации",
+        blank=True,
+        null=True,
+        default=''
+    )
+    menu_services_title = CKEditor5Field(
+        "Заголовок меню услуг",
+        blank=True,
+        null=True,
+        default=''
+    )
+    menu_works_title = CKEditor5Field(
+        "Заголовок меню работ",
+        blank=True,
+        null=True,
+        default=''
+    )
+
+    # Социальные сети
+    social_vk_url = models.URLField(
+        "Ссылка VK",
+        default="",
+        blank=True
+    )
+
+    # Копирайт
+    copyright_text = CKEditor5Field(
+        "Текст копирайта",
+        default=''
+    )
+
+    @classmethod
+    def load(cls):
+        """
+        Загружает или создает единственный экземпляр настроек футера
+        """
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    class Meta:
+        verbose_name = "Футер"
+        verbose_name_plural = "Футер"
+
+    def __str__(self):
+        return "Настройки футера"

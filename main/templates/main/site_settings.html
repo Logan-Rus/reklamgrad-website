@@ -1,0 +1,20 @@
+<div class="footer">
+    {% if site_settings.company_name %}
+        <h3>{{ site_settings.company_name|safe }}</h3>
+    {% endif %}
+    
+    <div class="contacts">
+        {% if site_settings.phone %}
+            <p>Телефон: {{ site_settings.phone }}</p>
+        {% endif %}
+        {% if site_settings.email %}
+            <p>Email: {{ site_settings.email }}</p>
+        {% endif %}
+    </div>
+    
+    {% if site_settings.copyright_text %}
+        <div class="copyright">
+            {{ site_settings.copyright_text|safe }}
+        </div>
+    {% endif %}
+</div>

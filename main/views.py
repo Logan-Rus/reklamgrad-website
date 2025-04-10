@@ -3,33 +3,54 @@
 # - get_object_or_404: используется для получения объекта из базы данных или вызова ошибки 404, если объект не найден.
 from django.shortcuts import render, get_object_or_404
 
-from django.http import JsonResponse # Декоратор для ограничения типа запроса
+from django.http import JsonResponse, HttpResponse, Http404  # Декоратор для ограничения типа запроса
 from django.views.decorators.http import require_POST # Класс для возврата JSON-ответов
 # Импорт моделей из текущего приложения (файл models.py).
 # Эти модели представляют данные, с которыми будут работать представления (views).
-from .models import Work, Service, MainPage, ContactRequest
+from .models import Work, Service, MainPage, ContactRequest, MenuItem, Footer, StaticPage
 
+def static_page_view(request, slug):
+    """
+    Универсальное представление для отображения статических страниц.
+
+    Параметры:
+    - slug (str): уникальный идентификатор страницы
+
+    Возвращает:
+    - Рендеринг шаблона static_page.html с контекстом страницы
+    - 404 ошибку, если страница не найдена
+    """
+    try:
+        page = StaticPage.objects.get(slug=slug)
+    except StaticPage.DoesNotExist:
+        raise Http404("Страница не найдена")
+
+    context = {
+        'page': page,
+    }
+
+    return render(request, 'main/static_page.html', context)
 
 @require_POST  # Разрешаем только POST-запросы
 def contact_submit(request):
-"""
+    """
     Функция для обработки данных контактной формы.
-    
+
     Принимает POST-запрос с параметрами:
     - email (строка): email пользователя
     - message (строка): текст сообщения
-    
+
     Возвращает JSON-ответ:
     - При успехе: {'status': 'success'}
     - При ошибке: {'status': 'error', 'message': 'Текст ошибки'} с кодом 400
-"""
+    """
     email = request.POST.get('email')
     message = request.POST.get('message')
 
-# Проверяем, что оба поля заполнены
+    # Проверяем, что оба поля заполнены
     if not email or not message:
- # Возвращаем ответ об ошибке в JSON-формате
- # status=400 означает "Bad Request" - некорректный запрос
+    # Возвращаем ответ об ошибке в JSON-формате
+    # status=400 означает "Bad Request" - некорректный запрос
         return JsonResponse(
             {'status': 'error', 'message': 'Заполните все поля!'},
             status=400
@@ -57,98 +78,42 @@ def home(request):
        - latest_works (QuerySet): Работы, отсортированные по ID
 
     """
-    main_page = MainPage.objects.first()
-    services = Service.objects.all()
     works = Work.objects.all()
-    latest_works = Work.objects.all().order_by('id')
+
     return render(request, 'main/home.html', {
 
-        'main_page': main_page,
-        'services': services,
         'works': works,
-        'latest_works': latest_works,
 
     })
 
-def service_detail(request, service_id):
-    """
-    Функция service_detail отображает детальную страницу для конкретной услуги.
 
-    Аргументы:
-        - request: Объект запроса.
-        - service_id: ID услуги, которую нужно отобразить.
+def detail_view(request, object_id, model_name):
+    if model_name == 'service':
+        obj = get_object_or_404(Service, id=object_id)
+        template = 'main/service_detail.html'
+    elif model_name == 'work':
+        obj = get_object_or_404(Work, id=object_id)
+        template = 'main/work_detail.html'
+    else:
+        raise Http404("Страница не найдена")
 
-    Контекст:
-        - service: Объект услуги, найденный по ID.
-        - latest_works: Все работы, отсортированные по ID.
-        - services_page (PageService): Данные страницы услуг
-
-    Возвращает:
-        HttpResponse: Рендерит шаблон 'main/service_detail.html' с переданным контекстом.
-    """
-    main_page = MainPage.objects.first()
-    service = get_object_or_404(Service, id=service_id)
-    services = Service.objects.all()
-    latest_works = Work.objects.all().order_by('id')
-    return render(request, 'main/service_detail.html', {'service': service, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
+    context = {
+        'service': obj if model_name == 'service' else None,
+        'work': obj if model_name == 'work' else None,
+    }
+    return render(request, template, context)
 
 
-def all_services(request):
-    """
-    Функция all_services отображает страницу со всеми услугами.
+def list_view(request, model_name):
+    if model_name == 'services':
+        template = 'main/all_services.html'
+    elif model_name == 'works':
+        works = Work.objects.all()
+        template = 'main/all_works.html'
+    else:
+        raise Http404("Страница не найдена")
 
-    Контекст:
-        - service2: Все услуги из модели Service.
-        - latest_works: Все работы, отсортированные по ID.
-        - services_page (PageService): Данные страницы услуг
-
-    Возвращает:
-        HttpResponse: Рендерит шаблон 'main/all_Services.html' с переданным контекстом.
-    """
-    main_page = MainPage.objects.first()
-    service2 = Service.objects.all()
-    latest_works = Work.objects.all().order_by('id')
-    return render(request, 'main/all_Services.html', {'service2': service2, 'latest_works': latest_works, 'main_page': main_page, })
-
-
-def work_detail(request, work_id):
-    """
-    Функция work_detail отображает детальную страницу для конкретной работы.
-
-    Аргументы:
-        - request: Объект запроса.
-        - work_id: ID работы, которую нужно отобразить.
-
-    Контекст:
-        - work: Объект работы, найденный по ID.
-        - latest_works: Все работы, отсортированные по ID.
-        - page_work (PageWork): Данные страницы работ
-
-    Возвращает:
-        HttpResponse: Рендерит шаблон 'main/work_detail.html' с переданным контекстом.
-    """
-    main_page = MainPage.objects.first()
-    latest_works = Work.objects.all().order_by('id')
-    services = Service.objects.all()
-    work = get_object_or_404(Work, id=work_id)
-    return render(request, 'main/work_detail.html', {'work': work, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
-
-
-def all_works(request):
-    """
-    Функция all_works отображает страницу со всеми работами.
-
-    Контекст:
-        - work2: Все работы из модели Work.
-        - latest_works: Все работы, отсортированные по ID.
-        - page_work (PageWork): Данные страницы работ
-
-    Возвращает:
-        HttpResponse: Рендерит шаблон 'main/all_works.html' с переданным контекстом.
-    """
-    main_page = MainPage.objects.first()
-    latest_works = Work.objects.all().order_by('id')
-    services = Service.objects.all()
-    work2 = Work.objects.all()
-    return render(request, 'main/all_works.html', {'work2': work2, 'latest_works': latest_works, 'main_page': main_page, 'services': services})
-
+    context = {
+        'works': works if model_name == 'works' else None,
+    }
+    return render(request, template, context)

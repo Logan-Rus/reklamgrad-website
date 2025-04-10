@@ -256,8 +256,8 @@
             text-align: center;
             color: white;
             background-color: rgba(0, 0, 0, 0.0); /* Цвет VK */
-            width: 30px; /* Размер иконки */
-            height: 30px; /* Размер иконки */
+            width: 30px !important; /* Размер иконки */
+            height: 30px ; /* Размер иконки */
         }
 
         .btn-icon:hover {
@@ -291,6 +291,7 @@
             text-decoration: none;
             transition: color 0.3s;
             font-size: 0.8rem;
+            width: 100%; 
         }
 
         .footer-menu a {
@@ -325,7 +326,6 @@
             height: 100px;
             object-fit: contain;
             border-radius: 1px;
-            clip-path: inset(0px 120px);
         }
 
         .footer .card-title {
@@ -358,6 +358,7 @@
         .footer-menu .nav-link:hover {
             color: white !important;
         }
+
         .row {
             display: flex;
             flex-wrap: wrap;
