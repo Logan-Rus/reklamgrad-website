@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Административная панель Django
     path('admin/', admin.site.urls),
-
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
     # Подключение URL-шаблонов из приложения 'main'
     path('', include('main.urls')),
 ]
