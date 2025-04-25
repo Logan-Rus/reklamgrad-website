@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,102 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ReklamGrad.urls'
 
+CKEDITOR_5_CONFIGS = {
+    'default': {
+'htmlSupport': {
+            'allow': [
+                {'name': 'a', 'attributes': ['class', 'href']},
+                {'name': 'span', 'attributes': ['class']}
+            ],
+        },
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'underline', 'strikethrough', '|',
+            'alignment', '|',
+            'bulletedList', 'numberedList', '|',
+            'blockQuote', 'codeBlock', '|',
+            'link', 'imageUpload', 'mediaEmbed', '|',
+            'insertTable', '|',
+            'undo', 'redo', '|',
+            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+            'highlight', '|',
+            'horizontalLine', 'pageBreak', '|',
+            'sourceEditing', '|',
+            'specialCharacters', 'math', '|',
+            'removeFormat', '|',
+            'fullScreen'
+        ],
+        'language': 'ru',  # Установите язык
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|',
+                'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|',
+                'toggleImageCaption', '|',
+                'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:100', '|',
+                'linkImage'
+            ],
+            'styles': [
+                'full',
+                'side',
+                'alignLeft',
+                'alignRight',
+                'alignCenter',
+            ],
+        },
+        'table': {
+            'contentToolbar': [
+                'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'
+            ],
+        },
+        'mediaEmbed': {
+            'previewsInData': True,
+        },
+        'codeBlock': {
+            'languages': [
+                {'language': 'python', 'label': 'Python'},
+                {'language': 'javascript', 'label': 'JavaScript'},
+                {'language': 'html', 'label': 'HTML'},
+                {'language': 'css', 'label': 'CSS'},
+                {'language': 'bash', 'label': 'Bash'},
+                {'language': 'json', 'label': 'JSON'},
+                {'language': 'xml', 'label': 'XML'},
+            ],
+        },
+        'math': {
+            'engine': 'katex',  # Используйте KaTeX для математических формул
+            'outputType': 'span',  # Или 'div'
+            'forceOutputType': False,
+            'enablePreview': True,
+        },
+        'fontFamily': {
+            'options': [
+                'default',
+                'Arial, Helvetica, sans-serif',
+                'Courier New, Courier, monospace',
+                'Georgia, serif',
+                'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                'Tahoma, Geneva, sans-serif',
+                'Times New Roman, Times, serif',
+                'Trebuchet MS, Helvetica, sans-serif',
+                'Verdana, Geneva, sans-serif',
+            ],
+        },
+        'fontSize': {
+            'options': [
+                9, 11, 13, 'default', 17, 19, 21, 24, 28, 32, 36
+            ],
+        },
+        'highlight': {
+            'options': [
+                {'model': 'yellowMarker', 'class': 'marker-yellow', 'title': 'Yellow Marker'},
+                {'model': 'greenMarker', 'class': 'marker-green', 'title': 'Green Marker'},
+                {'model': 'pinkMarker', 'class': 'marker-pink', 'title': 'Pink Marker'},
+                {'model': 'blueMarker', 'class': 'marker-blue', 'title': 'Blue Marker'},
+            ],
+        },
+    },
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -63,6 +160,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.common_context',
             ],
         },
     },
@@ -126,3 +224,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
