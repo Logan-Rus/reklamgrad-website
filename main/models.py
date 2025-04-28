@@ -4,14 +4,16 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 class StaticPage(models.Model):
-    title = CKEditor5Field(max_length=250, verbose_name="Заголовок")
-    slug = models.SlugField(max_length=200, unique=True, verbose_name="URL")
-    content = CKEditor5Field(verbose_name="Содержание")
+    """
+    Класс:
+        - StaticPage: для статических страниц сайта.
+    """
     meta_title = CKEditor5Field(max_length=250, blank=True, verbose_name="Мета-заголовок")
-    meta_description = CKEditor5Field(blank=True, verbose_name="Мета-описание")
+    slug = models.SlugField(max_length=200, unique=True, verbose_name="URL")
+    title = CKEditor5Field(max_length=250, verbose_name="Заголовок")
+    content = CKEditor5Field(verbose_name="Содержание")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -75,6 +77,38 @@ class Service(models.Model):
         """
         return self.title
 
+
+class Advantage(models.Model):
+    """
+    Класс для хранения преимуществ компании
+    Связана с MainPage через ForeignKey
+    """
+    main_page = models.ForeignKey(
+        'MainPage',
+        on_delete=models.CASCADE,
+        related_name='advantages',
+        verbose_name="Главная страница"
+    )
+    title = CKEditor5Field(
+        max_length=200,
+        verbose_name="Заголовок преимущества"
+    )
+    description = CKEditor5Field(
+        verbose_name="Описание преимущества"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Порядок сортировки"
+    )
+
+    class Meta:
+        verbose_name = "Преимущество"
+        verbose_name_plural = "Преимущества"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
 class MainPage(models.Model):
     """
         Класс:
@@ -96,15 +130,7 @@ class MainPage(models.Model):
 
     title_about = CKEditor5Field(verbose_name="Заголовок раздела О нас")
     image_about = models.ImageField(upload_to='about/', verbose_name="Изображение")
-    description_about = CKEditor5Field(verbose_name="Описание раздела ", blank=True, null=True)
-
-    # Поля для преимуществ
-    advantage1_title = CKEditor5Field(verbose_name="Заголовок преимущества 1")
-    advantage1_description = CKEditor5Field(verbose_name="Описание преимущества 1")
-    advantage2_title = CKEditor5Field(verbose_name="Заголовок преимущества 2")
-    advantage2_description = CKEditor5Field(verbose_name="Описание преимущества 2")
-    advantage3_title = CKEditor5Field(verbose_name="Заголовок преимущества 3")
-    advantage3_description = CKEditor5Field(verbose_name="Описание преимущества 3")
+    description_about = CKEditor5Field(verbose_name="Описание раздела ", null=True)
 
     title_service = CKEditor5Field(verbose_name="Заголовок раздела Сервисы")
     description_service = CKEditor5Field(verbose_name="Описание второго раздела", blank=True, null=True)
@@ -126,6 +152,9 @@ class MainPage(models.Model):
         return self.title
 
 class MenuItem(models.Model):
+    """
+    Класс для пунктов навигационного меню
+    """
     title = models.CharField(max_length=100, verbose_name="Название")
     url = models.CharField(max_length=200, verbose_name="URL или якорь")
     order = models.PositiveIntegerField(default=0)  # Для сортировки
@@ -173,7 +202,7 @@ class ContactRequest(models.Model):
 
 class Footer(models.Model):
     """
-    Модель для хранения информации футера сайта
+    Класс для хранения информации футера сайта
     """
     # Секция "О компании"
     company_title = CKEditor5Field(

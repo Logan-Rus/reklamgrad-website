@@ -63,6 +63,10 @@
             margin-bottom: 30% !important;
         }
 
+	.about-image {
+	    text-align: center;
+	}
+
         /* Стили для карточек в разделе "Наши услуги" */
         #service .card {
             background: none;

@@ -7,7 +7,7 @@ from django.http import JsonResponse, HttpResponse, Http404  # Декорато�
 from django.views.decorators.http import require_POST # Класс для возврата JSON-ответов
 # Импорт моделей из текущего приложения (файл models.py).
 # Эти модели представляют данные, с которыми будут работать представления (views).
-from .models import Work, Service, MainPage, ContactRequest, MenuItem, Footer, StaticPage
+from .models import Work, Service, ContactRequest, StaticPage
 
 def static_page_view(request, slug):
     """
@@ -88,6 +88,17 @@ def home(request):
 
 
 def detail_view(request, object_id, model_name):
+    """
+        Универсальное представление для отображения детальной страницы объекта.
+
+        Параметры:
+        - object_id: ID объекта
+        - model_name: тип объекта ('service' или 'work')
+
+        Возвращает:
+        - Рендеринг соответствующего шаблона с контекстом
+        - 404 ошибку, если объект не найден
+    """
     if model_name == 'service':
         obj = get_object_or_404(Service, id=object_id)
         template = 'main/service_detail.html'
@@ -105,6 +116,16 @@ def detail_view(request, object_id, model_name):
 
 
 def list_view(request, model_name):
+    """
+        Универсальное представление для отображения списка объектов.
+
+        Параметры:
+        - model_name: тип объектов ('services' или 'works')
+
+        Возвращает:
+        - Рендеринг соответствующего шаблона с контекстом
+        - 404 ошибку, если тип не поддерживается
+    """
     if model_name == 'services':
         template = 'main/all_services.html'
     elif model_name == 'works':

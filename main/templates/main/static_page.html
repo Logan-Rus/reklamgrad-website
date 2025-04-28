@@ -2,39 +2,27 @@
 
 {% block title %}
     {% if page.meta_title %}
-        {{ page.meta_title |safe }}
+        {{ page.meta_title |safe |striptags  }} | REKLAMGRAD
     {% else %}
-        {{ page.title |safe }} | REKLAMGRAD
+        {{ page.title |safe }}
     {% endif %}
 {% endblock %}
 
 {% block meta_description %}
     {% if page.meta_description  %}
-        {{ page.meta_description |safe }}
+        {{ page.meta_description |safe |striptags }}
     {% elif main_page %}
         {{ main_page.default_meta_description |safe }}
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-lg-8">
-                <h1 class="mb-4">{{ page.title |safe }}</h1>
 
-                {% if page.image %}
-                    <div class="mb-4">
-                        <img src="{{ page.image.url }}" alt="{{ page.title }}" class="img-fluid rounded">
-                    </div>
-                {% endif %}
+    {{ page.title |safe }}
+        {% if page.image %}
+        {% endif %}
+        {{ page.content|safe }}
 
-                <div class="page-content">
-                    {{ page.content|safe }}
-                </div>
-            </div>
-
-        </div>
-    </div>
 {% endblock %}
 
 {% block body_extra %}

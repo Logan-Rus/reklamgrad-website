@@ -36,31 +36,37 @@
     </div>
 
     <!-- О нас -->
-    <div id="about" class="container pt-5 text-center">
-        <img src="{{ main_page.image_about.url }}" class="img-fluid" alt="{{ main_page.title_about }}" style="max-width: 10%; height: auto;">
-        <div class="row justify-content-center">
-            <div class="col-md-6 mb-1">
-                <p class="card-text">{{ main_page.title_about |safe }}</p>
-                <div class="container my-5">
-                    <p class="section-title">{{ main_page.description_about |safe }}</p>
-                    <div class="row text-center">
-                        <div class="col-md-4">
-                            <p>{{ main_page.advantage1_title |safe }}<p>
-                            <p>{{ main_page.advantage1_description |safe }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p>{{ main_page.advantage2_title |safe }}</p>
-                            <p>{{ main_page.advantage2_description |safe }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p>{{ main_page.advantage3_title |safe }}</p>
-                            <p>{{ main_page.advantage3_description |safe }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="about" class="py-5" style="margin-top: 400px;"> 
+  <div class="container">
+    {% if main_page.image_about %}
+      <div class="text-center mb-4"> 
+        <img src="{{ main_page.image_about.url }}" alt="О компании" class="about-image img-fluid mx-auto">
+      </div>
+    {% endif %}
+    
+    <div class="about-content">
+      {{ main_page.title_about|safe }}
+      {{ main_page.description_about|safe }}
     </div>
+
+    <div class="advantages-section mt-5">  
+      <div class="row">
+        {% for advantage in main_page.advantages.all|dictsort:"order" %}
+          <div class="col-md-4 mb-4">
+            <div class="advantage-box">
+              <h3>{{ advantage.title|safe }}</h3>
+              <div class="advantage-text">
+                {{ advantage.description|safe }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <hr>
     <!-- Услуги -->
     <div id="service" class="container my-3 py-3">

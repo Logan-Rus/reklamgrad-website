@@ -1,212 +1,266 @@
-# Импорт необходимых модулей и классов Django для тестирования
 from django.test import TestCase
-
-# Импорт моделей, которые будут тестироваться
-from .models import Service, Work
-
-# Импорт функций для работы с URL-адресами
-from django.urls import resolve, reverse
-
-# Импорт представлений (views), которые будут тестироваться
-from .views import home, all_services, service_detail, all_works, work_detail
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
+from .models import (
+    StaticPage, Work, Service, Advantage,
+    MainPage, MenuItem, ContactRequest, Footer
+)
 
 
-class ModelTests(TestCase):
-    """
-    Класс для тестирования моделей приложения.
-    Проверяет, что модели корректно создаются и сохраняют данные.
-    """
+class StaticPageModelTest(TestCase):
+    """Тестирование модели StaticPage"""
 
-    def test_create_service(self):
+    def test_static_page_creation(self):
         """
-        Тест для проверки создания модели `Service`.
-        Проверяет, что:
-        1. Объект `Service` корректно создается.
-        2. Поля `title` и `description` содержат ожидаемые значения.
+        Тест создания статической страницы.
+        Проверяет:
+        - Корректное сохранение заголовка и slug
+        - Автоматическое заполнение дат создания/обновления
+        - Строковое представление объекта
         """
-        # Создаем тестовый объект услуги
-        service = Service.objects.create(
-            title="Тестовая услуга",
-            description="Описание тестовой услуги",
-            image="services/test.jpg"
+        page = StaticPage.objects.create(
+            title="О компании",
+            slug="about",
+            content="<p>О нашей компании</p>",
+            meta_title="О компании | Наш сайт"
+        )
+        self.assertEqual(page.title, "О компании")
+        self.assertEqual(page.slug, "about")
+        self.assertTrue(page.created_at <= timezone.now())
+        self.assertEqual(str(page), "О компании")
+
+    def test_slug_uniqueness(self):
+        """
+        Тест уникальности slug.
+        Проверяет, что невозможно создать две страницы с одинаковым slug.
+        """
+        StaticPage.objects.create(title="Page 1", slug="page")
+        with self.assertRaises(Exception):
+            StaticPage.objects.create(title="Page 2", slug="page")
+
+
+class WorkModelTest(TestCase):
+    """Тестирование модели Work"""
+
+    def setUp(self):
+        self.image = SimpleUploadedFile(
+            "work.jpg",
+            b"file_content",
+            content_type="image/jpeg"
         )
 
-        # Проверяем, что поле `title` содержит ожидаемое значение
-        self.assertEqual(service.title, "Тестовая услуга")
-
-        # Проверяем, что поле `description` содержит ожидаемое значение
-        self.assertEqual(service.description, "Описание тестовой услуги")
-
-    def test_create_work(self):
+    def test_work_creation(self):
         """
-        Тест для проверки создания модели `Work`.
-        Проверяет, что:
-        1. Объект `Work` корректно создается.
-        2. Поля `title2`, `description2` и `tip` содержат ожидаемые значения.
+        Тест создания работы.
+        Проверяет:
+        - Сохранение заголовка и описания
+        - Загрузку изображения в правильную директорию
+        - Необязательное поле tip
+        - Строковое представление
         """
-        # Создаем тестовый объект работы
         work = Work.objects.create(
-            title2="Тестовая работа",
-            description2="Описание тестовой работы",
-            image2="works/test.jpg",
-            tip="Тип работы"
+            title="Логотип компании",
+            description="Создание логотипа",
+            tip="Графика",
+            image=self.image
+        )
+        self.assertEqual(work.title, "Логотип компании")
+        self.assertEqual(work.tip, "Графика")
+        self.assertTrue(work.image.name.startswith('works/'))
+        self.assertEqual(str(work), "Логотип компании")
+
+
+class ServiceModelTest(TestCase):
+    """Тестирование модели Service"""
+
+    def setUp(self):
+        """Создание тестового изображения для услуги"""
+        self.image = SimpleUploadedFile(
+            "service.jpg",
+            b"file_content",
+            content_type="image/jpeg"
         )
 
-        # Проверяем, что поле `title2` содержит ожидаемое значение
-        self.assertEqual(work.title2, "Тестовая работа")
-
-        # Проверяем, что поле `description2` содержит ожидаемое значение
-        self.assertEqual(work.description2, "Описание тестовой работы")
-
-        # Проверяем, что поле `tip` содержит ожидаемое значение
-        self.assertEqual(work.tip, "Тип работы")
-
-
-class URLTests(TestCase):
-    """
-    Класс для тестирования URL-адресов приложения.
-    Проверяет, что URL-адреса корректно сопоставляются с соответствующими представлениями (views).
-    """
-
-    def test_home_url(self):
+    def test_service_creation(self):
         """
-        Тест для проверки URL главной страницы (home).
-        Проверяет, что URL 'home' корректно сопоставляется с представлением `home`.
+        Тест создания услуги.
+        Проверяет:
+        - Корректное сохранение данных
+        - Загрузку изображения
+        - Строковое представление
         """
-        # Получаем URL по имени маршрута
-        url = reverse('home')
-
-        # Проверяем, что URL сопоставляется с правильным представлением
-        self.assertEqual(resolve(url).func, home)
-
-    def test_all_services_url(self):
-        """
-        Тест для проверки URL страницы со всеми услугами (all_services).
-        Проверяет, что URL 'all_services' корректно сопоставляется с представлением `all_services`.
-        """
-        # Получаем URL по имени маршрута
-        url = reverse('all_services')
-
-        # Проверяем, что URL сопоставляется с правильным представлением
-        self.assertEqual(resolve(url).func, all_services)
-
-    def test_service_detail_url(self):
-        """
-        Тест для проверки URL страницы деталей услуги (service_detail).
-        Проверяет, что URL 'service_detail' корректно сопоставляется с представлением `service_detail`.
-        """
-        # Создаем тестовый объект услуги в базе данных
         service = Service.objects.create(
-            title="Тестовая услуга",
-            description="Описание тестовой услуги",
-            image="services/test.jpg"
+            title="Веб-дизайн",
+            description="Создание дизайна сайтов",
+            image=self.image
+        )
+        self.assertEqual(service.title, "Веб-дизайн")
+        self.assertTrue(service.image.name.startswith('services/'))
+        self.assertEqual(str(service), "Веб-дизайн")
+
+
+class AdvantageModelTest(TestCase):
+    """Тестирование модели Advantage"""
+
+    def setUp(self):
+        """Создание главной страницы для связи"""
+        self.main_page = MainPage.objects.create(
+            title="Главная страница",
+            description="Описание главной страницы"
         )
 
-        # Получаем URL по имени маршрута и передаем аргумент (id услуги)
-        url = reverse('service_detail', args=[service.id])
-
-        # Проверяем, что URL сопоставляется с правильным представлением
-        self.assertEqual(resolve(url).func, service_detail)
-
-    def test_all_works_url(self):
+    def test_advantage_creation(self):
         """
-        Тест для проверки URL страницы со всеми работами (all_works).
-        Проверяет, что URL 'all_works' корректно сопоставляется с представлением `all_works`.
+        Тест создания преимущества.
+        Проверяет:
+        - Связь с главной страницей
+        - Порядок сортировки
+        - Строковое представление
         """
-        # Получаем URL по имени маршрута
-        url = reverse('all_works')
+        advantage = Advantage.objects.create(
+            main_page=self.main_page,
+            title="Опыт 10 лет",
+            description="Мы работаем с 2013 года",
+            order=1
+        )
+        self.assertEqual(advantage.title, "Опыт 10 лет")
+        self.assertEqual(advantage.main_page, self.main_page)
+        self.assertEqual(advantage.order, 1)
+        self.assertEqual(str(advantage), "Опыт 10 лет")
 
-        # Проверяем, что URL сопоставляется с правильным представлением
-        self.assertEqual(resolve(url).func, all_works)
 
-    def test_work_detail_url(self):
-        """
-        Тест для проверки URL страницы деталей работы (work_detail).
-        Проверяет, что URL 'work_detail' корректно сопоставляется с представлением `work_detail`.
-        """
-        # Создаем тестовый объект работы в базе данных
-        work = Work.objects.create(
-            title2="Тестовая работа",
-            description2="Описание тестовой работы",
-            image2="works/test.jpg",
-            tip="Тип работы"
+class MainPageModelTest(TestCase):
+    """Тестирование модели MainPage"""
+
+    def setUp(self):
+        """Создание тестового фонового изображения"""
+        self.image = SimpleUploadedFile(
+            "bg.jpg",
+            b"file_content",
+            content_type="image/jpeg"
         )
 
-        # Получаем URL по имени маршрута и передаем аргумент (id работы)
-        url = reverse('work_detail', args=[work.id])
-
-        # Проверяем, что URL сопоставляется с правильным представлением
-        self.assertEqual(resolve(url).func, work_detail)
-
-
-class TemplateTests(TestCase):
-    """
-    Класс для тестирования шаблонов (HTML-страниц) приложения.
-    Наследуется от django.test.TestCase для использования функционала тестирования Django.
-    """
-
-    def test_home_template(self):
+    def test_main_page_creation(self):
         """
-        Тест для проверки главной страницы (home).
-        Проверяет, что:
-        1. Страница возвращает статус 200 (успешный запрос).
-        2. На странице присутствует текст "REKLAMGRAD".
-        3. На странице присутствует текст "Ваша реклама — наше искусство!".
+        Тест создания главной страницы.
+        Проверяет:
+        - Сохранение всех основных полей
+        - Загрузку фонового изображения
+        - Строковое представление
         """
-        # Получаем ответ от сервера при запросе главной страницы
-        response = self.client.get(reverse('home'))
+        main_page = MainPage.objects.create(
+            title="Рекламное агентство",
+            description="Лучшие рекламные решения",
+            image=self.image,
+            title_about="О нас",
+            description_about="Наша история",
+            title_service="Наши услуги",
+            title_work="Наши работы"
+        )
+        self.assertEqual(main_page.title, "Рекламное агентство")
+        self.assertTrue(main_page.image.name.startswith('homepage/'))
+        self.assertEqual(str(main_page), "Рекламное агентство")
 
-        # Проверяем, что ответ содержит текст "REKLAMGRAD"
-        self.assertContains(response, "REKLAMGRAD")
 
-        # Проверяем, что ответ содержит текст "Ваша реклама — наше искусство!"
-        self.assertContains(response, "Ваша реклама — наше искусство!")
+class MenuItemModelTest(TestCase):
+    """Тестирование модели MenuItem"""
 
-    def test_service_detail_template(self):
+    def test_menu_item_creation(self):
         """
-        Тест для проверки страницы деталей услуги (service_detail).
-        Проверяет, что:
-        1. Страница возвращает статус 200 (успешный запрос).
-        2. На странице присутствует название услуги.
-        3. На странице присутствует описание услуги.
+        Тест создания пункта меню.
+        Проверяет:
+        - Сохранение заголовка и URL
+        - Порядок сортировки
+        - Строковое представление
         """
-        # Создаем тестовый объект услуги в базе данных
-        service = Service.objects.create(
-            title="Тестовая услуга",
-            description="Описание тестовой услуги",
-            image="services/test.jpg"
+        item = MenuItem.objects.create(
+            title="Главная",
+            url="/",
+            order=1
+        )
+        self.assertEqual(item.title, "Главная")
+        self.assertEqual(item.order, 1)
+        self.assertEqual(str(item), "Главная")
+
+    def test_default_ordering(self):
+        """
+        Тест порядка сортировки пунктов меню.
+        Проверяет, что пункты сортируются по полю order.
+        """
+        MenuItem.objects.create(title="Услуги", url="/services/", order=2)
+        MenuItem.objects.create(title="Главная", url="/", order=1)
+        items = MenuItem.objects.all()
+        self.assertEqual(items[0].title, "Главная")
+        self.assertEqual(items[1].title, "Услуги")
+
+
+class ContactRequestModelTest(TestCase):
+    """Тестирование модели ContactRequest"""
+
+    def test_contact_request_creation(self):
+        """
+        Тест создания контактной заявки.
+        Проверяет:
+        - Сохранение email и сообщения
+        - Автоматическую дату создания
+        - Формат строкового представления
+        """
+        request = ContactRequest.objects.create(
+            email="test@example.com",
+            message="Нужна консультация"
+        )
+        self.assertEqual(request.email, "test@example.com")
+        self.assertTrue(request.created_at <= timezone.now())
+        self.assertIn("test@example.com", str(request))
+
+    def test_ordering(self):
+        """
+        Тест сортировки заявок.
+        Проверяет, что заявки сортируются по убыванию даты создания.
+        """
+        old = ContactRequest.objects.create(
+            email="old@test.com",
+            message="Старая заявка"
+        )
+        old.created_at = timezone.now() - timezone.timedelta(days=1)
+        old.save()
+
+        new = ContactRequest.objects.create(
+            email="new@test.com",
+            message="Новая заявка"
         )
 
-        # Получаем ответ от сервера при запросе страницы деталей услуги
-        response = self.client.get(reverse('service_detail', args=[service.id]))
+        requests = ContactRequest.objects.all()
+        self.assertEqual(requests[0].email, "new@test.com")
 
-        # Проверяем, что ответ содержит название услуги
-        self.assertContains(response, "Тестовая услуга")
 
-        # Проверяем, что ответ содержит описание услуги
-        self.assertContains(response, "Описание тестовой услуги")
+class FooterModelTest(TestCase):
+    """Тестирование модели Footer"""
 
-    def test_work_detail_template(self):
+    def test_footer_creation(self):
         """
-        Тест для проверки страницы деталей работы (work_detail).
-        Проверяет, что:
-        1. Страница возвращает статус 200 (успешный запрос).
-        2. На странице присутствует название работы.
-        3. На странице присутствует описание работы.
+        Тест создания настроек футера.
+        Проверяет:
+        - Сохранение основных полей
+        - Строковое представление
         """
-        # Создаем тестовый объект работы в базе данных
-        work = Work.objects.create(
-            title2="Тестовая работа",
-            description2="Описание тестовой работы",
-            image2="works/test.jpg",
-            tip="Тип работы"
+        footer = Footer.objects.create(
+            company_title="РекламГрад",
+            contact_phone="+79991234567",
+            contact_email="info@reklamgrad.ru",
+            copyright_text="© 2023 РекламГрад"
         )
+        self.assertEqual(footer.company_title, "РекламГрад")
+        self.assertEqual(footer.contact_phone, "+79991234567")
+        self.assertEqual(str(footer), "Настройки футера")
 
-        # Получаем ответ от сервера при запросе страницы деталей работы
-        response = self.client.get(reverse('work_detail', args=[work.id]))
-
-        # Проверяем, что ответ содержит название работы
-        self.assertContains(response, "Тестовая работа")
-
-        # Проверяем, что ответ содержит описание работы
-        self.assertContains(response, "Описание тестовой работы")
+    def test_load_method(self):
+        """
+        Тест метода load() (singleton-паттерн).
+        Проверяет, что метод всегда возвращает один и тот же экземпляр.
+        """
+        # Первый вызов создает объект
+        footer1 = Footer.load()
+        # Второй вызов получает существующий
+        footer2 = Footer.load()
+        self.assertEqual(footer1.pk, footer2.pk)
