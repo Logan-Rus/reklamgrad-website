@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    command: ["bash", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"]
+    volumes:
+      - .:/reklamgrad-website
+      - ./media:/reklamgrad-website/media
+      - ./static:/reklamgrad-website/static
+    ports:
+      - "8000:8000"    
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=ReklamGrad.settings
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"  
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf/localhost+3.pem:/etc/nginx/ssl/localhost+3.pem:ro
+      - ./nginx/conf/localhost+3-key.pem:/etc/nginx/ssl/localhost+3-key.pem:ro
+    depends_on:
+      - web
