@@ -74,14 +74,16 @@
     
                 <!-- Последние работы -->
                 <div class="col-md-3">
+                    <div class="menu_works_title">
                     {{ footer.menu_works_title |safe }}
+                    </div>
                     <div class="row">
                         {% if latest_works %}
                             {% for work in latest_works|slice:":3"  %}
                                 <div class="col-md-12 mb-3">
                                     <div class="card">
                                         <a href="{% url 'work_detail' work.id %}">
-                                            <img src="{{ work.image.url }}" class="card-img-top" alt="{{ work.title }}">
+                                            <img src="{{ work.image.url }}" loading="lazy" class="card-img-top" alt="{{ work.title }}">
                                             <div class="card-body">
                                                 <h6 class="card-title">{{ work.title|safe }}</h6>
                                             </div>
@@ -99,7 +101,7 @@
             <!-- Копирайт -->
             <div class="text-center">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-center">{{ footer.copyright_text |safe }}</div>
+                    <div id="copyright">{{ footer.copyright_text |safe }}</div>
                     <a href="{{ footer.social_vk_url }}" target="_blank" class="btn btn-icon " title="Мы в VK">
                         <i class="fab fa-vk"></i>
                     </a>

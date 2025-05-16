@@ -2,7 +2,7 @@
 
 {% block title %}
     {% if page.meta_title %}
-        {{ page.meta_title |safe |striptags  }} | REKLAMGRAD
+        {{ page.meta_title |safe |striptags  }}
     {% else %}
         {{ page.title |safe }}
     {% endif %}
@@ -18,7 +18,7 @@
 
 {% block content %}
 
-    {{ page.title |safe }}
+<div class="page-title"> {{ page.title |safe }} </div>
         {% if page.image %}
         {% endif %}
         {{ page.content|safe }}

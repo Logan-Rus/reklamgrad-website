@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Наши услуги | REKLAMGRAD</title>
+    <meta name="description" content="Наше рекламное агентство полного цикла предлагает Вам широкий спектр услуг по изготовлению, размещению и дизайну рекламной продукции всех видов.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="{% static 'favicon.ico' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script type="application/ld+json">
+    {{ jsonld_data|safe }}
+    </script>
 </head>
 <body>
     <!-- Экран загрузки -->
@@ -21,8 +26,8 @@
     {% include 'navbar.html' %}
 
     <!-- Все наши услуги -->
-    <div id="service" class="container my-3 py-3">
-        <p class="section-title">{{ main_page.title_service |safe }}</p>
+    <div id="service" class="container my-4 py-4">
+        <h1 class="section-title">{{ main_page.title_service |safe }}</h1>
         <p>{{ main_page.description_service |safe }}</p>
         <div class="row">
             {% if services %}
@@ -30,10 +35,12 @@
                     <div class="col-md-3 mb-3 ">
                         <div class="card">
                             <a href="{% url 'service_detail' object_id=service.id %}">
-                                <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.title }}">
+                                <img src="{{ service.image.url }}" loading="lazy" class="card-img-top" alt="{{ service.title }}">
                             </a>
                             <div class="card-body text-center">
-                                <h3 class="card-title">{{ service.title|safe|striptags }}</h3>
+                                <div class="card-title">
+                                    <p>{{ service.title|safe|striptags }}</p>
+                                </div>
                                 <div class="text-left">
                                     {% if service.description %}
                                         <p>{{ service.description|truncatechars:60|safe|striptags }}</p>
@@ -54,7 +61,7 @@
 
     <!-- Контакты -->
     <div id="contact" class="container my-5 py-5">
-        <p>{{ main_page.contact_title|safe }}</p>
+        <h4 style="text-align: center;">{{ main_page.contact_title|safe }}</h4>
         <form method="POST" action="{% url 'contact_submit' %}" id="contactForm">
             {% csrf_token %}
             <div class="mb-3 w-50 mx-auto">

@@ -2,6 +2,7 @@
 # Этот модуль предоставляет базовые классы для создания моделей Django.
 # Модели представляют таблицы в базе данных и используются для работы с данными.
 from django.db import models
+from django.db.models import TextField
 from django_ckeditor_5.fields import CKEditor5Field
 from django.utils import timezone
 
@@ -10,15 +11,16 @@ class StaticPage(models.Model):
     Класс:
         - StaticPage: для статических страниц сайта.
     """
-    meta_title = CKEditor5Field(max_length=250, blank=True, verbose_name="Мета-заголовок")
+    meta_title = TextField(max_length=250, blank=True, verbose_name="Мета-заголовок")
+    meta_description = CKEditor5Field(blank=True, verbose_name="Мета-описание")
     slug = models.SlugField(max_length=200, unique=True, verbose_name="URL")
-    title = CKEditor5Field(max_length=250, verbose_name="Заголовок")
+    title = TextField(max_length=250, verbose_name="Заголовок")
     content = CKEditor5Field(verbose_name="Содержание")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return self.meta_title
 
     class Meta:
         verbose_name = "Статическая страница"
@@ -30,12 +32,14 @@ class Work(models.Model):
         - Work: для хранения информации о работе.
 
     Поля:
-        - title2: Название работы (не больше 200 букв).
+        - title: Название работы (не больше 200 букв).
         - tip: Дополнительная информация о работе.
-        - description2: Подробное описание работы.
-        - image2: Изображение, связанное с работой.
+        - description: Подробное описание работы.
+        - image: Изображение, связанное с работой.
     """
-    title = CKEditor5Field(max_length=200, verbose_name="Название работы")
+    meta_title = TextField(max_length=250, blank=True, verbose_name="Мета-заголовок")
+    meta_description = CKEditor5Field(blank=True, null=True, verbose_name="Мета-описание")
+    title = TextField(max_length=200, verbose_name="Название работы")
     tip = CKEditor5Field(verbose_name="Тип работы", blank=True, null=True)
     description = CKEditor5Field(verbose_name="Описание", blank=True, default="")
     image = models.ImageField(upload_to='works/', verbose_name="Изображение")
@@ -47,7 +51,7 @@ class Work(models.Model):
     def __str__(self):
         """
         Функция __str__:
-                - self.title2: Возвращает название работы для отображения.
+                - self.title: Возвращает название работы для отображения.
         """
         return self.title
 
@@ -61,8 +65,9 @@ class Service(models.Model):
             - description: Подробное описание услуги.
             - image: Изображение, связанное с услугой.
         """
-
-    title = CKEditor5Field(max_length=200, verbose_name="Название услуги")
+    meta_title = models.CharField(max_length=60, blank=True, verbose_name="Мета-заголовок")
+    meta_description = CKEditor5Field(blank=True, verbose_name="Мета-описание")
+    title = TextField(max_length=200, verbose_name="Название услуги")
     description = CKEditor5Field(verbose_name="Описание", blank=True, default="")
     image = models.ImageField(upload_to='services/', verbose_name="Изображение")
 
@@ -89,7 +94,7 @@ class Advantage(models.Model):
         related_name='advantages',
         verbose_name="Главная страница"
     )
-    title = CKEditor5Field(
+    title = TextField(
         max_length=200,
         verbose_name="Заголовок преимущества"
     )
@@ -123,22 +128,23 @@ class MainPage(models.Model):
         - Контакты
         - Футер
     """
+    meta_title = models.CharField(max_length=60, blank=True, verbose_name="Мета-заголовок")
+    meta_description = CKEditor5Field(blank=True, verbose_name="Мета-описание")
 
-    title = CKEditor5Field(verbose_name="Заголовок главной страницы")
+    title = TextField(blank=True,verbose_name="Заголовок главной страницы")
     description = CKEditor5Field(verbose_name="Описание главной страницы", blank=True, default="")
     image = models.ImageField(upload_to='homepage/', verbose_name="Background-изображение главной страницы")
 
-    title_about = CKEditor5Field(verbose_name="Заголовок раздела О нас")
     image_about = models.ImageField(upload_to='about/', verbose_name="Изображение")
     description_about = CKEditor5Field(verbose_name="Описание раздела ", null=True)
 
-    title_service = CKEditor5Field(verbose_name="Заголовок раздела Сервисы")
+    title_service = TextField(verbose_name="Заголовок раздела Сервисы")
     description_service = CKEditor5Field(verbose_name="Описание второго раздела", blank=True, null=True)
 
-    title_work = CKEditor5Field(verbose_name="Заголовок раздела Работы")
+    title_work = TextField(verbose_name="Заголовок раздела Работы")
     description_work = CKEditor5Field(verbose_name="Описание третьего раздела", blank=True, null=True)
 
-    contact_title = CKEditor5Field(verbose_name="Заголовок формы обратной связи", blank=True, null=True)
+    contact_title = TextField(verbose_name="Заголовок формы обратной связи", blank=True, null=True)
 
     class Meta:
         verbose_name = "Главная страница"
@@ -205,7 +211,7 @@ class Footer(models.Model):
     Класс для хранения информации футера сайта
     """
     # Секция "О компании"
-    company_title = CKEditor5Field(
+    company_title = TextField(
         "Название компании",
         blank=True,
         null=True,
@@ -218,7 +224,7 @@ class Footer(models.Model):
     )
 
     # Контактная информация
-    contact_phone_title = CKEditor5Field(
+    contact_phone_title = TextField(
         "Заголовок телефона",
         blank=True,
         null=True,
@@ -229,7 +235,7 @@ class Footer(models.Model):
         max_length=20,
         default=""
     )
-    contact_email_title = CKEditor5Field(
+    contact_email_title = TextField(
         "Заголовок email",
         blank=True,
         null=True,
@@ -241,19 +247,19 @@ class Footer(models.Model):
     )
 
     # Меню футера
-    menu_nav_title = CKEditor5Field(
+    menu_nav_title = TextField(
         "Заголовок меню навигации",
         blank=True,
         null=True,
         default=''
     )
-    menu_services_title = CKEditor5Field(
+    menu_services_title = TextField(
         "Заголовок меню услуг",
         blank=True,
         null=True,
         default=''
     )
-    menu_works_title = CKEditor5Field(
+    menu_works_title = TextField(
         "Заголовок меню работ",
         blank=True,
         null=True,
