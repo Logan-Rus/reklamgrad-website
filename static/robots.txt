@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /static/
+Disallow: /media/
+Disallow: /accounts/
+Disallow: /cart/
+Disallow: /checkout/
+Allow: /
+
+# Заменишь URL на боевой при деплое
+Sitemap: https://example.com/sitemap.xml
