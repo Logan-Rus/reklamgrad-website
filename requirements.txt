@@ -5,4 +5,4 @@ locust==2.33.2
 requests==2.32.3
 coverage==7.7.0
 django-sslserver==0.22
-gunicorn
+gunicorn==23.0.0
